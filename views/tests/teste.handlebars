@@ -1,0 +1,16 @@
+<!-- Exemplo de HTML -->
+<button onclick="buscarDados('6838bc79280d36f5344ec0ce')">Buscar Dados para ID 1</button>
+<div id="resultado"></div>
+
+<script>
+    async function buscarDados(id) {
+        try {
+            const resposta = await fetch(`/api/player/${id}`);
+            const dados = await resposta.json();
+
+           console.log(dados)
+        } catch (error) {
+            console.error('Erro:', error);
+        }
+    }
+</script>

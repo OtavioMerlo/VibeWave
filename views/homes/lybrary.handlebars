@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibewave | Sua Biblioteca</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Navegação Lateral -->
+        <nav class="sidebar">
+            <div class="logo">
+                <span class="logo-icon">VW</span>
+                <span class="logo-text">Vibewave</span>
+            </div>
+            <ul class="nav-links">
+                <li>
+                    <a href="/home">
+                        <i class="fas fa-home"></i>
+                        <span>Início</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/search">
+                        <i class="fas fa-search"></i>
+                        <span>Buscar</span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="/lybrary">
+                        <i class="fas fa-book"></i>
+                        <span>Sua biblioteca</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/perfil">
+                        <i class="fas fa-user"></i>
+                        <span>Perfil</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="playlists">
+                <h3>Suas Playlists</h3>
+                <ul>
+                    <li><a href="playlist.html">Favoritas</a></li>
+                    <li><a href="Recentemente.html">Reproduzidas Recentemente</a></li>
+                    <li><a href="Treino.html">Treino</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Navegação Mobile -->
+        <nav class="mobile-nav">
+            <button class="hamburger">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="mobile-logo">VW</div>
+        </nav>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <header class="page-header">
+                <h1>Sua Biblioteca</h1>
+                <div class="library-actions">
+                <button onclick="abrirModal()" class="action-btn">Criar Playlist</button>
+
+                    <div id="modal" class="modal">
+                        <div class="modal-content">
+                            <span class="fechar" onclick="fecharModal()">&times;</span>
+                            
+                            <div class="playlist-container">
+                                <div class="imagem-container" onclick="document.getElementById('inputFoto').click()">
+                                    <img id="fotoPreview" src="" alt="Foto da Playlist">
+                                    <div class="icone-camera">&#128247;</div>
+                                    <input type="file" id="inputFoto" accept="image/*" onchange="carregarImagem(event)">
+                                    <p class="alterar-imagem">Alterar imagem</p>
+                                </div>
+
+                                <div class="inputs">
+                                    <h2>Criar playlist</h2>
+                                    <input type="text" id="nomePlaylist" placeholder="Digite um nome que você goste.." class="input">
+                                    <input type="text" id="descricaoPlaylist" placeholder="Preencha com uma boa biografia .." class="input">
+                                    <button class="btn-confirmar" onclick="criarPlaylist()">CONFIRME</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="theme-toggle">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                </div>
+            </header>
+
+            <section class="library-tabs">
+                <div class="tabs">
+                    <button class="tab active" data-tab="playlists">Playlists</button>
+                    <button class="tab" data-tab="artists">Artistas</button>
+                    <button class="tab" data-tab="albums">Álbuns</button>
+                </div>
+            </section>
+
+            <section class="library-content">
+                <div class="tab-content active" id="playlists">
+                    <div class="playlist-grid">
+                        <div class="playlist-card" onclick="location.href='player.html'">
+                            <div class="playlist-cover">
+                                <img src="assets/img/internet.jpg" alt="Capa da Playlist">
+                                <div class="play-button">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                            </div>
+                            <h3>Minhas Favoritas</h3>
+                            <p>24 músicas</p>
+                        </div>
+                        <div class="playlist-card" onclick="location.href='player.html'">
+                            <div class="playlist-cover">
+                                <img src="assets/img/treino.jpg" alt="Capa da Playlist">
+                                <div class="play-button">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                            </div>
+                            <h3>Treino</h3>
+                            <p>18 músicas</p>
+                        </div>
+                        <div class="playlist-card" onclick="location.href='player.html'">
+                            <div class="playlist-cover">
+                                <img src="assets/img/luan.jpg" alt="Capa da Playlist">
+                                <div class="play-button">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                            </div>
+                            <h3>Sertanejo</h3>
+                            <p>12 músicas</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="artists">
+                    <div class="artists-grid">
+                        <div class="artist-card">
+                            <div class="artist-avatar">
+                                <img src="assets/img/mc.jpg" alt="Artista">
+                            </div>
+                            <h3>vento Forte</h3>
+                            <p>Mc Jacaré</p>
+                        </div>
+                        <div class="artist-card">
+                            <div class="artist-avatar">
+                                <img src="assets/img/tiaguinho.jpg" alt="Artista">
+                            </div>
+                            <h3>Camisa 10</h3>
+                            <p>Tiaguinho</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="albums">
+                    <div class="albums-grid">
+                        <div class="album-card" onclick="location.href='player.html'">
+                            <div class="album-cover">
+                                <img src="assets/img/eminem.jpg" alt="Capa do Álbum">
+                                <div class="play-button">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                            </div>
+                            <h3>Encore</h3>
+                            <p>Eminem</p>
+                        </div>
+                        <div class="album-card" onclick="location.href='player.html'">
+                            <div class="album-cover">
+                                <img src="assets/img/covers/playlist1.jpg" alt="Capa do Álbum">
+                                <div class="play-button">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                            </div>
+                            <h3>Sonhos no Oceano</h3>
+                            <p>Chill Beats</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Rodapé do Player -->
+         <footer class="player-footer">
+            <div class="now-playing">
+                <div class="now-playing-cover">
+                    <img src="assets/img/covers/midnight.jpg" alt="Now Playing Cover">
+                </div>
+                <div class="now-playing-info">
+                    <h3>Midnight Vibes</h3>
+                    <p>Electro Wave</p>
+                </div>
+                <button class="like-btn">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+            <div class="player-controls">
+                <div class="control-buttons">
+                    <button class="control-btn shuffle">
+                        <i class="fas fa-random"></i>
+                    </button>
+                    <button class="control-btn prev">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
+                   <button class="control-btn play" id="btn-play">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="control-btn play" id="btn-pause" style="display: none;">
+                        <i class="fas fa-pause"></i>
+                    </button>
+                    <button class="control-btn next">
+                        <i class="fas fa-step-forward"></i>
+                    </button>
+                    <button class="control-btn repeat">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                </div>
+                <div class="progress-container">
+                    <span class="time-current">0:00</span>
+                    <div class="progress-bar">
+                        <div class="progress"></div>
+                    </div>
+                    <span class="time-total">3:45</span>
+                </div>
+            </div>
+            <div class="player-options">
+                <button class="volume-btn">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+                <div class="volume-slider">
+                    <input type="range" min="0" max="100" value="80">
+                </div>
+            </div>
+        </footer>
+    </div>
+
+        <script src="assets/js/main.js"></script>
+
+        <script>
+               
+         const btnPlay = document.getElementById('btn-play');
+         const btnPause = document.getElementById('btn-pause');
+
+         
+            btnPlay.addEventListener('click', () => {
+                btnPlay.style.display = 'none';      
+                btnPause.style.display = 'inline';  
+            
+            });
+
+            btnPause.addEventListener('click', () => {
+                btnPause.style.display = 'none';     
+                btnPlay.style.display = 'inline';    
+                
+            });
+
+
+
+            function abrirModal() {
+                document.getElementById("editar").style.display = "flex";
+            }
+
+            function fecharModal() {
+                document.getElementById("editar").style.display = "none";
+            }
+
+            
+            window.onclick = function(event) {
+                const modal = document.getElementById("editar");
+                if (event.target === modal) {
+                fecharModal();
+                }
+            }
+
+            function carregarImagem(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                    const preview = document.getElementById("fotoPreview");
+                    preview.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            
+        </script>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+
+    <script>
+
+    function abrirModal() {
+    document.getElementById("modal").style.display = "flex";
+    }
+
+    function fecharModal() {
+    document.getElementById("modal").style.display = "none";
+    }
+
+    function carregarImagem(event) {
+    const reader = new FileReader();
+        reader.onload = function () {
+        const preview = document.getElementById("fotoPreview");
+        preview.src = reader.result;
+        preview.style.display = "block";
+
+        const icone = document.querySelector(".icone-camera");
+        const texto = document.querySelector(".alterar-imagem");
+        if (icone) icone.style.display = "none";
+        if (texto) texto.style.display = "none";
+            };
+            if (event.target.files[0]) {
+                reader.readAsDataURL(event.target.files[0]);
+            }
+    }
+
+    function criarPlaylist() {
+    const nome = document.getElementById("nomePlaylist").value.trim();
+    const descricao = document.getElementById("descricaoPlaylist").value.trim();
+
+        if (!nome) {
+            alert("Digite um nome para a playlist.");
+            return;
+        }
+
+    alert(`Playlist criada:\nNome: ${nome}\nDescrição: ${descricao}`);
+   
+    fecharModal();
+}
+
+
+</script>
+
+</body>
+</html>

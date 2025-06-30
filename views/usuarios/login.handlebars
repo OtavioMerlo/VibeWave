@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login/Cadastro</title>
+  <link rel="icon" href="">
+  <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+
+{{#each erros}}
+    <div class="notification error alert alert-danger">
+    <span class="icon">❌</span>
+    <span class="message">{{texto}}</span>
+    <span class="close-btn">&times;</span>
+  </div>
+{{else}}
+{{/each}}
+{{#if error_msg}}
+  <div class="notification error alert alert-danger">
+    <span class="icon">❌</span>
+    <span class="message">{{error_msg}}</span> <!-- Corrigido aqui -->
+    <span class="close-btn">&times;</span>
+  </div>
+{{/if}}
+
+{{#if success_msg}}
+ <div class="notification success alert-success">
+    <span class="icon">✅</span>
+    <span class="message">{{success_msg}}</span>
+    <span class="close-btn">&times;</span>
+  </div>
+{{/if}}
+
+<!-- Seu formulário continua aqui -->
+
+
+<div class="particulas"></div>  
+  <div class="container" id="container">
+    <div class="form-container sign-up-container">
+      <form action="./registro" method="post">
+        <h1>Cadastre-se</h1>
+        <input name="nome" type="text" placeholder="Nome de Usuario" />
+        <input name="email" type="email" placeholder="Email" />
+        <input name="senha" type="password" placeholder="Senha" />
+        <input name="senha2" type="password" placeholder="Confirme sua senha" />
+        <button type="submit">Cadastre-se</button>
+        <p>Já tem uma conta? <a href="#" onclick="toggleForm(false)">Login</a></p>
+      </form>
+    </div>
+
+    <div class="form-container sign-in-container">
+      <form action="./login" method="post">
+        <h1>Login</h1>
+        <input name="email" type="email" placeholder="Email" />
+        <input name="password" type="password" placeholder="Senha" />
+        <button onclick="window.location.href='home.html'">Login</button>
+        <p>Não Tem Uma Conta? <a href="#" onclick="toggleForm(true)">Cadastre-se</a></p>
+      </form>
+    </div>
+
+    <div class="overlay-container">
+      <div class="overlay">
+        <div class="overlay-panel overlay-left">
+          <h1>Bem-Vindo!</h1>
+          <p>Vamos começar o show? Cadastre-se e entre para o universo onde você é o DJ da sua própria história. Descubra novos sons, crie playlists incríveis e sinta a música do seu jeito. O palco está pronto — só falta você!.</p>
+        </div>
+        <div class="overlay-panel overlay-right">
+          <h1>Bem-Vindo de Volta!</h1>
+          <p>Seja bem-vindo ao seu cantinho musical! Aqui, cada login é um novo show, cada clique uma nova batida. Aperte o play e deixe a vibe te levar!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/login.js"></script>
+</body>
+</html>

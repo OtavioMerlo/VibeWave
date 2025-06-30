@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmony | Editar Artista</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6a0dad;
+            --primary-dark: #4b0082;
+            --primary-light: #9b59b6;
+            --secondary: #ff9f43;
+            --text: #333;
+            --text-light: #666;
+            --bg: #f8f1ff;
+            --card-bg: #ffffff;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 0;
+            color: var(--text);
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+        
+        .header i {
+            font-size: 28px;
+            color: var(--primary);
+            margin-right: 15px;
+        }
+        
+        .header h1 {
+            margin: 0;
+            color: var(--primary-dark);
+            font-weight: 700;
+            font-size: 28px;
+        }
+        
+        .header span {
+            color: var(--primary-light);
+            font-weight: 300;
+        }
+        
+        .form-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(106, 13, 173, 0.1);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            font-size: 15px;
+        }
+        
+        .form-group label.required::after {
+            content: ' *';
+            color: #e74c3c;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+            background-color: #faf5ff;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.2);
+            outline: none;
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+        }
+        
+        .radio-option input {
+            margin-right: 8px;
+            accent-color: var(--primary);
+        }
+        
+        .photo-upload {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .photo-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 3px solid var(--primary-light);
+            background-color: #f0e6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-light);
+        }
+        
+        .upload-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .upload-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .btn-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(106, 13, 173, 0.3);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: #f0e6ff;
+            transform: translateY(-2px);
+        }
+        
+        .music-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-light);
+            opacity: 0.5;
+        }
+        
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236a0dad' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 12px;
+            padding-right: 35px;
+        }
+        
+        @media (max-width: 768px) {
+            .radio-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .photo-upload {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <i class="fas fa-music"></i>
+            <h1>VibeWave <span>| Editar Artista {{artista.nome}}</span></h1>
+        </div>
+        
+        <div class="form-card">
+            <form method="post" action="/admin/artista/edit" id="artistForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="nome" class="required">Nome do Artista</label>
+                    <input type="text" id="nome" name="nome" class="form-control" required value='{{artista.nome}}'>
+                    <i class="fas fa-user music-icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label for="pais" class="required">País de Origem</label>
+                    <input type="text" id="pais" name="pais" class="form-control" required value="{{artista.pais}}">
+                    <i class="fas fa-globe-americas music-icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label for="genero_musical" class="required">Gênero Musical</label>
+                    <select id="genero_musical" name="genero_musical" class="form-control" required>
+                        <option value="{{artista.genero_musical}}" selected>{{artista.genero_musical}}</option>
+                        <option value="pop" >Pop</option>
+                        <option value="rock">Rock</option>
+                        <option value="hiphop">Hip Hop</option>
+                        <option value="eletronica">Eletrônica</option>
+                        <option value="mpb">MPB</option>
+                        <option value="sertanejo">Sertanejo</option>
+                        <option value="indie">Indie</option>
+                        <option value="outro">Outro</option>
+                    </select>
+                    <i class="fas fa-guitar music-icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label class="required">Status</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="status_ativo" name="status" value="Ativo" checked>
+                            <label for="status_ativo" style="font-weight: normal;">Ativo</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="status_inativo" name="status" value="Inativo">
+                            <label for="status_inativo" style="font-weight: normal;">Inativo</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="status_recesso" name="status" value="Recesso">
+                            <label for="status_recesso" style="font-weight: normal;">Recesso</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="biografia">Biografia</label>
+                    <textarea id="biografia" name="biografia" class="form-control">{{artista.biografia}}</textarea>
+                    <i class="fas fa-pen music-icon" style="top: 30px;"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label for="foto">Foto do Artista Atual</label>
+                    <div class="photo-upload">
+                        <img id="photoPreview" src="/uploads/artistas/{{artista.foto}}" class="photo-preview">
+                        <div>
+                             <input name="foto" placeholder="teste" class="form-control" type="file" id="photoUrl" accept="image/*">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="website">Website</label>
+                    <input type="url" id="website" name="website" class="form-control" value="{{artista.website}}">
+                    <i class="fas fa-link music-icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label for="datanas">Data de Nascimento</label>
+                    <input type="date" id="datanas" name="datanas" class="form-control" value="{{artista.datanas}}">
+                    <i class="fas fa-birthday-cake music-icon"></i>
+                </div>
+
+                <input type="hidden" name="id" value="{{artista._id}}">
+                
+                <div class="form-group">
+                    <label for="plataforma">Plataforma Principal</label>
+                    <select id="plataforma" name="plataforma" class="form-control">
+                        <option value="{{artista.plataforma}}">{{artista.plataforma}}</option>
+                        <option value="spotify" selected>Spotify</option>
+                        <option value="youtube">YouTube</option>
+                        <option value="apple">Apple Music</option>
+                        <option value="deezer">Deezer</option>
+                        <option value="soundcloud">SoundCloud</option>
+                    </select>
+                    <i class="fas fa-headphones music-icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label for="handle">Handle/Usuário</label>
+                    <input type="text" id="handle" name="handle" class="form-control" value="{{artista.handle}}">
+                    <i class="fas fa-at music-icon"></i>
+                </div>
+                
+                <div class="btn-group">
+                    <a href="/admin"><button type="button" class="btn btn-outline">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button></a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Salvar Artista
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
