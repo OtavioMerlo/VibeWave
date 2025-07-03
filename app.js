@@ -125,8 +125,28 @@ app.get('/perfil', eLogado, (req, res) => {
     res.render('homes/perfil', {user: userData });
 });
 
-app.get('/player', (req, res) => {
-    res.render('homes/player');
+app.get('/player/:id', async (req, res) => {
+    try {
+        const musica = await MusicasSchema.findOne({_id: req.params.id})
+            .lean()
+            .populate('artista');
+
+        if (!musica) {
+            return res.redirect('/404');
+        }
+
+        const minutos = Math.floor(musica.duracao / 60);
+        const segundos = Math.floor(musica.duracao % 60);
+        const tempoFormatado = `${minutos}:${segundos.toString().padStart(2, '0')}`;
+        
+        res.render('homes/player', { 
+            musica: musica, 
+            tempo: tempoFormatado 
+        });
+    } catch (err) {
+        console.error('Erro ao buscar música:', err);
+        res.redirect('/404');
+    }
 });
 
 app.get('/playlist', (req, res) => {

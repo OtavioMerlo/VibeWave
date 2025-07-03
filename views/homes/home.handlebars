@@ -73,6 +73,7 @@
                 <br>
                 <div class="playlist-grid">
                     {{#each musicas}}
+                    <a href="/player/{{this._id}}">
                     <div class="playlist-card">
                         <div class="playlist-cover">
                             <img src="./uploads/capamusica/{{this.capa}}" alt="Playlist Cover">
@@ -83,6 +84,7 @@
                         <h3>{{this.titulo}}</h3>
                         <p>{{this.artista.nome}}</p>
                     </div>
+                    </a>
                     {{/each}}
                 </div>
             </section>

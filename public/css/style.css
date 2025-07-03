@@ -612,7 +612,6 @@ body.dark .sidebar {
     top: 0;
     left: 0;
     height: 100%;
-    width: 30%;
     background: linear-gradient(to right, var(--primary-light), var(--primary-lighter));
     border-radius: 2px;
 }
