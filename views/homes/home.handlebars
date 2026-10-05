@@ -3,229 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vibewave | Discover</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Vibewave | Descobrir</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/vibewave.css">
 </head>
 <body>
     <div class="app-container">
-        <!-- Sidebar Navigation -->
-        <nav class="sidebar">
-            <div class="logo">
-                <span class="logo-icon">VW</span>
-                <span class="logo-text">Vibewave</span>
-            </div>
-            <ul class="nav-links">
-                <li class="active">
-                    <a target="_blank" href="/home">
-                        <i class="fas fa-home"></i>
-                        <span>Início</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/search">
-                        <i class="fas fa-search"></i>
-                        <span>Buscar</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/lybrary">
-                        <i class="fas fa-book"></i>
-                        <span>Sua biblioteca</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/perfil">
-                        <i class="fas fa-user"></i>
-                        <span>Perfil</span>
-                    </a>
-                </li>
-            </ul>
-            <div class="playlists">
-                <h3>Sua Playlist</h3>
-                <ul>
-                    <li><a href="playlist.html">Favoritas</a></li>
-                    <li><a href="Recentemente.html">Escutadas Recentemente</a></li>
-                    <li><a href="Treino.html">Workout Mix</a></li>
-                </ul>
-            </div>
-        </nav>
+        {{> mobile-nav}}
+        {{> sidebar active="home"}}
 
-        <!-- Mobile Navigation -->
-        <nav class="mobile-nav">
-            <button class="hamburger">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="mobile-logo">VW</div>
-        </nav>
-
-        <!-- Main Content -->
         <main class="main-content">
             <header class="page-header">
-                <h1>Discover</h1>
-                <div class="theme-toggle">
+                <div>
+                    <h1>Descobrir</h1>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">
+                        Bom te ver, {{#if user}}{{user.name}}{{else}}ouvinte{{/if}}!
+                    </p>
+                </div>
+                <div class="theme-toggle" role="button" aria-label="Alternar tema">
                     <i class="fas fa-moon"></i>
                 </div>
             </header>
 
             <section class="featured-playlists">
-                <h2>Listas de reprodução em destaque</h2>
-                <br>
+                <h2>Em destaque</h2>
                 <div class="playlist-grid">
                     {{#each musicas}}
-                    <a href="/player/{{this._id}}">
-                    <div class="playlist-card">
+                    <a href="/player/{{this.id}}" class="playlist-card">
                         <div class="playlist-cover">
-                            <img src="./uploads/capamusica/{{this.capa}}" alt="Playlist Cover">
-                            <div class="play-button">
-                                <i class="fas fa-play"></i>
-                            </div>
+                            {{#if this.capa}}
+                                <img src="/uploads/capamusica/{{this.capa}}" alt="{{this.titulo}}">
+                            {{else}}
+                                <div class="cover-placeholder"><i class="fas fa-music"></i></div>
+                            {{/if}}
+                            <div class="play-button"><i class="fas fa-play"></i></div>
                         </div>
                         <h3>{{this.titulo}}</h3>
                         <p>{{this.artista.nome}}</p>
-                    </div>
                     </a>
+                    {{else}}
+                    <p style="color: var(--text-muted);">Nenhuma música cadastrada ainda.</p>
                     {{/each}}
                 </div>
             </section>
 
             <section class="recently-played">
-                <h2>Escutadas Recentemente</h2>
-                <br>
+                <h2>Tocadas recentemente</h2>
                 <div class="track-list">
-                    <div class="track-item" onclick="location.href='player.html'">
-                        <div class="track-number">1</div>
+                    {{#each musicas}}
+                    <div class="track-item" onclick="location.href='/player/{{this.id}}'">
+                        <div class="track-number">{{inc @index}}</div>
                         <div class="track-cover">
-                            <img src="assets/img/quente.jpg" alt="Track Cover">
+                            {{#if this.capa}}
+                                <img src="/uploads/capamusica/{{this.capa}}" alt="{{this.titulo}}">
+                            {{else}}
+                                <div class="cover-placeholder"><i class="fas fa-music"></i></div>
+                            {{/if}}
                         </div>
                         <div class="track-info">
-                            <h3>Pirocada Quente</h3>
-                            <p>Mc Jvila, Negão Original, Dj Dael, Dj Guh Mix</p>
+                            <h3>{{this.titulo}}</h3>
+                            <p>{{this.artista.nome}} · {{this.genero}}</p>
                         </div>
-                        <div class="track-duration">3:45</div>
+                        <div class="track-duration">{{formatDuracao this.duracao}}</div>
                     </div>
-                    <div class="track-item" onclick="location.href='player.html'">
-                        <div class="track-number">2</div>
-                        <div class="track-cover">
-                            <img src="assets/img/internet.jpg" alt="Track Cover">
-                        </div>
-                        <div class="track-info">
-                            <h3>A Internet é Toxica</h3>
-                            <p>Mc Saci, Mc Pretchako, Dj LC, Dj João da Inestan</p>
-                        </div>
-                        <div class="track-duration">4:12</div>
-                    </div>
+                    {{else}}
+                    <p style="color: var(--text-muted);">Seu histórico aparecerá aqui.</p>
+                    {{/each}}
                 </div>
             </section>
         </main>
 
-        <!-- Player Footer -->
-       <footer class="player-footer">
-            <div class="now-playing">
-                <div class="now-playing-cover">
-                    <img src="assets/img/covers/midnight.jpg" alt="Now Playing Cover">
-                </div>
-                <div class="now-playing-info">
-                    <h3>Midnight Vibes</h3>
-                    <p>Electro Wave</p>
-                </div>
-                <button class="like-btn">
-                    <i class="far fa-heart"></i>
-                </button>
-            </div>
-            <div class="player-controls">
-                <div class="control-buttons">
-                    <button class="control-btn shuffle">
-                        <i class="fas fa-random"></i>
-                    </button>
-                    <button class="control-btn prev">
-                        <i class="fas fa-step-backward"></i>
-                    </button>
-                   <button class="control-btn play" id="btn-play">
-                        <i class="fas fa-play"></i>
-                    </button>
-                    <button class="control-btn play" id="btn-pause" style="display: none;">
-                        <i class="fas fa-pause"></i>
-                    </button>
-                    <button class="control-btn next">
-                        <i class="fas fa-step-forward"></i>
-                    </button>
-                    <button class="control-btn repeat">
-                        <i class="fas fa-redo"></i>
-                    </button>
-                </div>
-                <div class="progress-container">
-                    <span class="time-current">0:00</span>
-                    <div class="progress-bar">
-                        <div class="progress"></div>
-                    </div>
-                    <span class="time-total">3:45</span>
-                </div>
-            </div>
-            <div class="player-options">
-                <button class="volume-btn">
-                    <i class="fas fa-volume-up"></i>
-                </button>
-                <div class="volume-slider">
-                    <input type="range" min="0" max="100" value="80">
-                </div>
-            </div>
-        </footer>
+        {{> player-footer musicaAtual=musicas.[0]}}
     </div>
 
-        <script src="assets/js/main.js"></script>
-
-        <script>
-               
-         const btnPlay = document.getElementById('btn-play');
-         const btnPause = document.getElementById('btn-pause');
-
-         
-            btnPlay.addEventListener('click', () => {
-                btnPlay.style.display = 'none';      
-                btnPause.style.display = 'inline';  
-            
-            });
-
-            btnPause.addEventListener('click', () => {
-                btnPause.style.display = 'none';     
-                btnPlay.style.display = 'inline';    
-                
-            });
-
-
-
-            function abrirModal() {
-                document.getElementById("editar").style.display = "flex";
-            }
-
-            function fecharModal() {
-                document.getElementById("editar").style.display = "none";
-            }
-
-            
-            window.onclick = function(event) {
-                const modal = document.getElementById("editar");
-                if (event.target === modal) {
-                fecharModal();
-                }
-            }
-
-            function carregarImagem(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                    const preview = document.getElementById("fotoPreview");
-                    preview.src = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            }
-
-            
-        </script>
-
-    <script src="js/main.js"></script>
+    <script src="/js/vibewave.js"></script>
 </body>
 </html>

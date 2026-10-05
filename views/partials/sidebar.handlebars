@@ -1,0 +1,40 @@
+<nav class="sidebar" id="sidebar">
+    <a class="logo" href="/home">
+        <span class="logo-icon"><i class="fas fa-wave-square"></i></span>
+        <span class="logo-text">Vibewave</span>
+    </a>
+
+    <ul class="nav-links">
+        <li class="{{#eq active 'home'}}active{{/eq}}">
+            <a href="/home"><i class="fas fa-home"></i><span>Início</span></a>
+        </li>
+        <li class="{{#eq active 'search'}}active{{/eq}}">
+            <a href="/search"><i class="fas fa-search"></i><span>Buscar</span></a>
+        </li>
+        <li class="{{#eq active 'library'}}active{{/eq}}">
+            <a href="/lybrary"><i class="fas fa-book"></i><span>Sua biblioteca</span></a>
+        </li>
+        <li class="{{#eq active 'perfil'}}active{{/eq}}">
+            <a href="/perfil"><i class="fas fa-user"></i><span>Perfil</span></a>
+        </li>
+    </ul>
+
+    <div class="playlists">
+        <h3>Suas Playlists</h3>
+        <ul>
+            <li><a href="/playlist"><i class="fas fa-heart"></i> Favoritas</a></li>
+            <li><a href="/recentemente"><i class="fas fa-clock"></i> Recentes</a></li>
+            <li><a href="/treino"><i class="fas fa-dumbbell"></i> Treino</a></li>
+        </ul>
+    </div>
+
+    {{#if user}}
+    <a class="sidebar-user" href="/perfil">
+        <img src="/uploads/FotoUser/{{user.foto}}" alt="{{user.name}}">
+        <div>
+            <strong>{{user.name}}</strong>
+            <small>Ver perfil</small>
+        </div>
+    </a>
+    {{/if}}
+</nav>

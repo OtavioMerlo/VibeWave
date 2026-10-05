@@ -1,23 +1,19 @@
-const Sequelize = require('sequelize');
 const bcrypt = require('bcryptjs');
-
-const sequelize = new Sequelize('vibewave', 'root', 'otaviomerlo123@', {
-    host: 'localhost',
-    dialect: 'mysql',
-});
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/db');
 
 const User = sequelize.define('users', {
     id: {
-        type: Sequelize.INTEGER, // Corrigi de "INTEGER" para "INTEGER"
+        type: DataTypes.INTEGER, // Corrigi de "INTEGER" para "INTEGER"
         autoIncrement: true,
         primaryKey: true
     },
     name: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false
     },
     email: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
         unique: true,
         validate: {
@@ -25,22 +21,22 @@ const User = sequelize.define('users', {
         }
     },
     foto: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         defaultValue: 'default.png'
     },
     password: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
         validate: {
             len: [8, 100]
         }
     },
     createdAt: {
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     },
     isAdmin: {
-        type: Sequelize.BOOLEAN,
+        type: DataTypes.BOOLEAN,
         defaultValue: false,
     }
 }, {
@@ -50,7 +46,4 @@ const User = sequelize.define('users', {
 
 //User.sync({ force: true })
 
-module.exports = {
-    sequelize,
-    User
-};
+module.exports = User;

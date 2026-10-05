@@ -1,246 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibewave | Perfil</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Aguafina+Script&family=Boldonse&family=Great+Vibes&family=League+Gothic:wdth@90.1&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/perfil.css">
-    <title>Vibewave | Perfil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/vibewave.css">
 </head>
 <body>
     <div class="app-container">
-        <!-- Sidebar Navigation -->
-        <nav class="sidebar">
-            <div class="logo">
-                <span class="logo-icon">VW</span>
-                <span class="logo-text">Vibewave</span>
-            </div>
-            <ul class="nav-links">
-                <li >
-                    <a href="/home">
-                        <i class="fas fa-home"></i>
-                        <span>Início</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/search">
-                        <i class="fas fa-search"></i>
-                        <span>Buscar</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/lybrary">
-                        <i class="fas fa-book"></i>
-                        <span>Sua biblioteca</span>
-                    </a>
-                </li>
-                <li class="active">
-                    <a href="/perfil">
-                        <i class="fas fa-user"></i>
-                        <span>Perfil</span>
-                    </a>
-                </li>
-            </ul>
-            <div class="playlists">
-                <h3>Sua Playlist</h3>
-                <ul>
-                    <li><a href="playlist.html">Favoritas</a></li>
-                    <li><a href="Recentemente.html">Escutadas Recentemente</a></li>
-                    <li><a href="Treino.html">Workout Mix</a></li>
-                </ul>
-            </div>
-        </nav>
-
-        <!-- Mobile Navigation -->
-        <nav class="mobile-nav">
-            <button class="hamburger">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="mobile-logo">VW</div>
-        </nav>
+        {{> mobile-nav}}
+        {{> sidebar active="perfil"}}
 
         <main class="main-content">
             <header class="page-header">
-                <img src="./uploads/FotoUser/{{user.foto}}" alt="foto" class="foto-perfil">
-                 <div class="info-usuario">
-                    <h1>{{user.name}}</h1>
-                </div>
-                <div class="theme-toggle">
-                    <i class="fas fa-moon"></i>
-                </div>
+                <h1>Seu perfil</h1>
+                <div class="theme-toggle" role="button" aria-label="Alternar tema"><i class="fas fa-moon"></i></div>
             </header>
 
-              <section class="library-tabs">
+            <section class="profile-header">
+                <img src="/uploads/FotoUser/{{user.foto}}" alt="{{user.name}}" class="foto-perfil">
+                <div class="info-usuario">
+                    <h1>{{user.name}}</h1>
+                    <p><i class="fas fa-envelope"></i> {{user.email}}</p>
+                    <div style="margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="abrirModal('editar')"><i class="fas fa-pen"></i> Editar perfil</button>
+                        <a href="/usuario/logout" class="btn btn-secondary"><i class="fas fa-right-from-bracket"></i> Sair</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="library-tabs">
                 <div class="tabs">
-                    <button class="tab active" data-tab="playlists">Playlist Publicadas</button>
-                    <button  onclick="abrirModal()" class="tab" data-tab="editar">Editar Perfil</button>
+                    <button class="tab active" data-tab="publicadas">Playlists publicadas</button>
                 </div>
             </section>
 
             <section class="library-content">
-                <div class="tab-content active" id="playlists">
+                <div class="tab-content active" id="publicadas">
                     <div class="playlist-grid">
-                        <div class="playlist-card" onclick="location.href='player.html'">
-                            <div class="playlist-cover">
-                                <img src="assets/img/montagem.jpg" alt="Capa da Playlist">
-                                <div class="play-button">
-                                    <i class="fas fa-play"></i>
-                                </div>
-                            </div>
-                            <h3>Automotivo</h3>
-                            <p>24 músicas</p>
-                        </div>
-                        <div class="playlist-card" onclick="location.href='player.html'">
-                            <div class="playlist-cover">
-                                <img src="assets/img/quente.jpg" alt="Capa da Playlist">
-                                <div class="play-button">
-                                    <i class="fas fa-play"></i>
-                                </div>
-                            </div>
-                            <h3>Funk</h3>
-                            <p>18 músicas</p>
-                        </div>
-                        <div class="playlist-card" onclick="location.href='player.html'">
-                            <div class="playlist-cover">
-                                <img src="assets/img/eletro.jpg" alt="Capa da Playlist">
-                                <div class="play-button">
-                                    <i class="fas fa-play"></i>
-                                </div>
-                            </div>
-                            <h3>EletroFunk</h3>
-                            <p>12 músicas</p>
-                        </div>
+                        <a href="/playlist" class="playlist-card">
+                            <div class="playlist-cover"><div class="cover-placeholder"><i class="fas fa-heart"></i></div></div>
+                            <h3>Favoritas</h3>
+                            <p>Sua coleção</p>
+                        </a>
+                        <a href="/recentemente" class="playlist-card">
+                            <div class="playlist-cover"><div class="cover-placeholder"><i class="fas fa-clock"></i></div></div>
+                            <h3>Recentes</h3>
+                            <p>Últimas escutadas</p>
+                        </a>
+                        <a href="/treino" class="playlist-card">
+                            <div class="playlist-cover"><div class="cover-placeholder"><i class="fas fa-dumbbell"></i></div></div>
+                            <h3>Treino</h3>
+                            <p>Workout mix</p>
+                        </a>
                     </div>
                 </div>
-
-
-                <div class="modal" id="editar">
-                    <div class="modal-content">
-                        <span class="fechar" onclick="fecharModal()">&times;</span>
-                        <h2>Detalhes do perfil</h2>
-                        <img src="assets/img/pedro.jpg" alt="foto" class="foto" id="fotoPreview">
-                        <input placeholder="Username" class="input" name="text" type="text">
-                        <input type="file" id="inputFoto" accept="image/*" style="display: none;" onchange="carregarImagem(event)">
-                        <button class="salvar" type="button" onclick="document.getElementById('inputFoto').click()">Trocar foto</button>
-                        <button class="salvar" id="sair">Salvar</button>
-                        <p class="info">
-                        Ao continuar, você autoriza o VibeWave a acessar a imagem enviada. Certifique-se de que você tem o direito de fazer o upload dessa imagem.
-                        </p>
-                    </div>
-                </div>
-
             </section>
         </main>
 
-        <footer class="player-footer">
-            <div class="now-playing">
-                <div class="now-playing-cover">
-                    <img src="assets/img/covers/midnight.jpg" alt="Now Playing Cover">
+        <div class="modal" id="editar">
+            <div class="modal-content">
+                <button class="fechar" onclick="fecharModal('editar')">&times;</button>
+                <h2>Detalhes do perfil</h2>
+                <img src="/uploads/FotoUser/{{user.foto}}" alt="foto" class="foto" id="fotoPreview" style="width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary);">
+                <div class="field">
+                    <label>Nome</label>
+                    <input type="text" value="{{user.name}}">
                 </div>
-                <div class="now-playing-info">
-                    <h3>Midnight Vibes</h3>
-                    <p>Electro Wave</p>
-                </div>
-                <button class="like-btn">
-                    <i class="far fa-heart"></i>
+                <input type="file" id="inputFoto" accept="image/*" style="display: none;" onchange="carregarImagem(event)">
+                <button class="btn btn-secondary" type="button" onclick="document.getElementById('inputFoto').click()">
+                    <i class="fas fa-camera"></i> Trocar foto
                 </button>
+                <button class="btn btn-primary" type="button" onclick="fecharModal('editar')">Salvar</button>
             </div>
-            <div class="player-controls">
-                <div class="control-buttons">
-                    <button class="control-btn shuffle">
-                        <i class="fas fa-random"></i>
-                    </button>
-                    <button class="control-btn prev">
-                        <i class="fas fa-step-backward"></i>
-                    </button>
-                   <button class="control-btn play" id="btn-play">
-                        <i class="fas fa-play"></i>
-                    </button>
-                    <button class="control-btn play" id="btn-pause" style="display: none;">
-                        <i class="fas fa-pause"></i>
-                    </button>
-                    <button class="control-btn next">
-                        <i class="fas fa-step-forward"></i>
-                    </button>
-                    <button class="control-btn repeat">
-                        <i class="fas fa-redo"></i>
-                    </button>
-                </div>
-                <div class="progress-container">
-                    <span class="time-current">0:00</span>
-                    <div class="progress-bar">
-                        <div class="progress"></div>
-                    </div>
-                    <span class="time-total">3:45</span>
-                </div>
-            </div>
-            <div class="player-options">
-                <button class="volume-btn">
-                    <i class="fas fa-volume-up"></i>
-                </button>
-                <div class="volume-slider">
-                    <input type="range" min="0" max="100" value="80">
-                </div>
-            </div>
-        </footer>
+        </div>
+
+        {{> player-footer}}
     </div>
 
-        <script src="assets/js/main.js"></script>
-
-        <script>
-               
-         const btnPlay = document.getElementById('btn-play');
-         const btnPause = document.getElementById('btn-pause');
-
-         
-            btnPlay.addEventListener('click', () => {
-                btnPlay.style.display = 'none';      
-                btnPause.style.display = 'inline';  
-            
-            });
-
-            btnPause.addEventListener('click', () => {
-                btnPause.style.display = 'none';     
-                btnPlay.style.display = 'inline';    
-                
-            });
-
-
-
-            function abrirModal() {
-                document.getElementById("editar").style.display = "flex";
-            }
-
-            function fecharModal() {
-                document.getElementById("editar").style.display = "none";
-            }
-
-            
-            window.onclick = function(event) {
-                const modal = document.getElementById("editar");
-                if (event.target === modal) {
-                fecharModal();
-                }
-            }
-
-            function carregarImagem(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                    const preview = document.getElementById("fotoPreview");
-                    preview.src = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            }
-
-            
-        </script>
-
-
+    <script src="/js/vibewave.js"></script>
 </body>
 </html>

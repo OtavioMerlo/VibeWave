@@ -1,55 +1,63 @@
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/db');
 
-const MusicaSchema = new Schema({
+const Musica = sequelize.define('musics', {
+
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+
     titulo: {
-        type: String,
-        required: [true, 'O título é obrigatório'],
-        trim: true,
-        maxlength: [100, 'Título muito longo (máx. 100 caracteres)']
+        type: DataTypes.STRING,
+        allowNull: false
     },
-    artista: { // Nome no singular (convenção)
-        type: Schema.Types.ObjectId,
-        ref: 'artistas', // Referência ao model (inicial maiúscula)
-        required: true
+
+    artistId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'artists',
+            key: 'id'
+        }
     },
+
     genero: {
-        type: String,
-        default: 'Outro'
+        type: DataTypes.STRING,
+        defaultValue: 'Outro'
     },
-    duracao: { // Adicionei campo de duração
-        type: Number, // Em segundos
-        min: [1, 'Duração mínima de 1 segundo']
+
+    duracao: {
+        type: DataTypes.INTEGER,
+        allowNull: false
     },
+
     audio: {
-        type: String,
-        required: true,
-        validate: {
-            validator: v => /\.(mp3|wav|ogg)$/i.test(v),
-            message: 'Formato de áudio inválido!'
-        }
+        type: DataTypes.STRING,
+        allowNull: false
     },
-    capa: { // Nome mais descritivo que "fotomusica"
-        type: String,
-        validate: {
-            validator: v => /\.(jpg|jpeg|png|gif)$/i.test(v),
-            message: 'Formato de imagem inválido!'
-        }
+
+    capa: {
+        type: DataTypes.STRING
     },
+
     letra: {
-        type: String,
-        trim: true
+        type: DataTypes.TEXT
     },
-    lancamento: { // Substitui "datanas" por campo mais adequado
-        type: Date,
-        default: Date.now
+
+    lancamento: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     },
+
     status: {
-        type: String,
-        default: 'Ativa'
+        type: DataTypes.STRING,
+        defaultValue: 'Ativa'
     }
+
 }, {
-    timestamps: true // Adiciona createdAt e updatedAt automaticamente
+    tableName: 'musics'
 });
 
-module.exports = mongoose.model('musicas', MusicaSchema);
+module.exports = Musica;

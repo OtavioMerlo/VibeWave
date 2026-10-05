@@ -1,383 +1,79 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Música - Plataforma Musical</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <style>
-        :root {
-            --primary: #9c27b0;
-            --primary-dark: #7b1fa2;
-            --primary-light: #ba68c8;
-            --background: #121212;
-            --surface: #1e1e1e;
-            --text-primary: #e1e1e1;
-            --text-secondary: #b0b0b0;
-            --error: #cf6679;
-        }
-        
-        body {
-            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--background);
-            margin: 0;
-            padding: 20px;
-            color: var(--text-primary);
-            min-height: 100vh;
-            transition: all 0.5s ease;
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 30px auto;
-            background-color: var(--surface);
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            animation: fadeIn 0.8s ease-out;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(156, 39, 176, 0.2);
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        h1 {
-            color: var(--primary-light);
-            margin-bottom: 30px;
-            text-align: center;
-            font-weight: 600;
-            text-shadow: 0 0 10px rgba(156, 39, 176, 0.3);
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { text-shadow: 0 0 10px rgba(156, 39, 176, 0.3); }
-            50% { text-shadow: 0 0 20px rgba(156, 39, 176, 0.5); }
-            100% { text-shadow: 0 0 10px rgba(156, 39, 176, 0.3); }
-        }
-        
-        .form-group {
-            margin-bottom: 25px;
-            transition: all 0.3s;
-        }
-        
-        .form-group:focus-within {
-            transform: translateX(5px);
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 500;
-            color: var(--primary-light);
-            transition: color 0.3s;
-        }
-        
-        input[type="text"], 
-        select, 
-        textarea {
-            width: 100%;
-            padding: 12px 15px;
-            background-color: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            font-size: 16px;
-            color: var(--text-primary);
-            transition: all 0.3s;
-        }
-        
-        input[type="text"]:focus, 
-        select:focus, 
-        textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(156, 39, 176, 0.3);
-            background-color: rgba(156, 39, 176, 0.05);
-        }
-        
-        textarea {
-            min-height: 180px;
-            resize: vertical;
-        }
-        
-        .audio-preview {
-            margin-top: 15px;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 15px;
-            border-radius: 8px;
-            animation: slideIn 0.5s ease-out;
-        }
-        
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        
-        .audio-preview p {
-            margin-bottom: 10px;
-            color: var(--text-secondary);
-        }
-        
-        audio {
-            width: 100%;
-            filter: invert(0.8) hue-rotate(270deg) brightness(0.8);
-        }
-        
-        .status-options {
-            display: flex;
-            gap: 25px;
-            margin-top: 10px;
-        }
-        
-        .status-option {
-            display: flex;
-            align-items: center;
-            position: relative;
-        }
-        
-        .status-option input {
-            position: absolute;
-            opacity: 0;
-        }
-        
-        .status-option label {
-            display: flex;
-            align-items: center;
-            padding: 8px 15px 8px 35px;
-            border-radius: 20px;
-            cursor: pointer;
-            background-color: rgba(255, 255, 255, 0.05);
-            transition: all 0.3s;
-            position: relative;
-        }
-        
-        .status-option label:before {
-            content: '';
-            position: absolute;
-            left: 12px;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            border: 2px solid var(--text-secondary);
-            transition: all 0.3s;
-        }
-        
-        .status-option input:checked + label {
-            background-color: rgba(156, 39, 176, 0.2);
-            color: var(--primary-light);
-        }
-        
-        .status-option input:checked + label:before {
-            border-color: var(--primary-light);
-            background-color: var(--primary);
-        }
-        
-        .button-group {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 40px;
-        }
-        
-        button {
-            padding: 14px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s, transform 0.2s;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        button:active {
-            transform: scale(0.95);
-        }
-        
-        button:after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 5px;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.5);
-            opacity: 0;
-            border-radius: 100%;
-            transform: scale(1, 1) translate(-50%);
-            transform-origin: 50% 50%;
-        }
-        
-        button:focus:not(:active)::after {
-            animation: ripple 1s ease-out;
-        }
-        
-        @keyframes ripple {
-            0% {
-                transform: scale(0, 0);
-                opacity: 0.5;
-            }
-            100% {
-                transform: scale(20, 20);
-                opacity: 0;
-            }
-        }
-        
-        .save-btn {
-            background-color: var(--primary);
-            color: white;
-        }
-        
-        .save-btn:hover {
-            background-color: var(--primary-dark);
-            box-shadow: 0 5px 15px rgba(156, 39, 176, 0.4);
-        }
-        
-        .cancel-btn {
-            background-color: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            margin-right: 15px;
-        }
-        
-        .cancel-btn:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        .delete-btn {
-            background-color: var(--error);
-            color: white;
-        }
-        
-        .delete-btn:hover {
-            background-color: #b00020;
-            box-shadow: 0 5px 15px rgba(207, 102, 121, 0.4);
-        }
-        
-        /* Animação para os inputs */
-        input, select, textarea {
-            animation: fadeInUp 0.5s ease-out;
-            animation-fill-mode: both;
-        }
-        
-        /* Delay para cada elemento */
-        .form-group:nth-child(1) { animation-delay: 0.1s; }
-        .form-group:nth-child(2) { animation-delay: 0.2s; }
-        .form-group:nth-child(3) { animation-delay: 0.3s; }
-        .form-group:nth-child(4) { animation-delay: 0.4s; }
-        .form-group:nth-child(5) { animation-delay: 0.5s; }
-        
-        /* Efeito de onda ao clicar */
-        @keyframes wave {
-            0% { box-shadow: 0 0 0 0 rgba(156, 39, 176, 0.7); }
-            100% { box-shadow: 0 0 0 10px rgba(156, 39, 176, 0); }
-        }
-        
-        .wave-effect {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .wave-effect:after {
-            content: '';
-            display: block;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            background-image: radial-gradient(circle, rgba(156, 39, 176, 0.5) 10%, transparent 10.01%);
-            background-repeat: no-repeat;
-            background-position: 50%;
-            transform: scale(10, 10);
-            opacity: 0;
-            transition: transform .5s, opacity 1s;
-        }
-        
-        .wave-effect:active:after {
-            transform: scale(0, 0);
-            opacity: 0.3;
-            transition: 0s;
-        }
-    </style>
+    <title>Vibewave | Editar Música</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
 </head>
 <body>
-    <div class="container animate__animated animate__fadeIn">
-        <h1 class="animate__animated animate__fadeInDown">Editar Música</h1>
-        
-        <form id="music-edit-form">
-            <div class="form-group wave-effect">
-                <label for="title">Título da Música</label>
-                <input type="text" id="title" name="title" placeholder="Digite o título da música" value="{{musica.titulo}}" class="animate__animated animate__fadeInUp">
-            </div>
-            
-            <div class="form-group wave-effect">
-                <label for="genre">Gênero Musical</label>
-                <select id="genre" name="genre" class="animate__animated animate__fadeInUp">
-                    <option value="pop">Pop</option>
-                    <option value="{{musica.genero}}" selected>{{musica.genero}}</option>
-                    <option value="hiphop">Hip Hop</option>
-                    <option value="electronic">Eletrônica</option>
-                    <option value="jazz">Jazz</option>
-                    <option value="classical">Clássica</option>
-                    <option value="country">Country</option>
-                    <option value="reggae">Reggae</option>
-                    <option value="other">Outro</option>
-                </select>
-            </div>
-            
-            <div class="form-group wave-effect">
-                <label for="audio">Arquivo de Áudio</label>
-            
-                <div class="audio-preview animate__animated animate__fadeIn">
-                    <p>Arquivo atual: musica_atual.mp3</p>
-                    <audio controls>
-                        <source src="/uploads/musicas/{{musica.audio}}">
-                        Seu navegador não suporta o elemento de áudio.
-                    </audio>
+    <div class="form-page">
+        <div class="form-card">
+            <h1><i class="fas fa-music" style="color:#a78bfa"></i> Editar música</h1>
+            <p class="sub">{{musica.titulo}}</p>
+
+            <div class="form-grid">
+                <div class="field">
+                    <label>Título</label>
+                    <input type="text" value="{{musica.titulo}}" readonly>
+                </div>
+                <div class="field">
+                    <label>Gênero</label>
+                    <input type="text" value="{{musica.genero}}" readonly>
+                </div>
+                <div class="field">
+                    <label>Duração</label>
+                    <input type="text" value="{{formatDuracao musica.duracao}}" readonly>
+                </div>
+                <div class="field">
+                    <label>Status</label>
+                    <input type="text" value="{{musica.status}}" readonly>
                 </div>
             </div>
-            
-            <div class="form-group wave-effect">
-                <label for="lyrics">Letra da Música</label>
-                <textarea id="lyrics" name="lyrics" placeholder="Digite a letra da música aqui..." class="animate__animated animate__fadeInUp">{{musica.letra}}</textarea>
+
+            <div class="field">
+                <label>Prévia do áudio</label>
+                <audio controls style="width:100%">
+                    <source src="/uploads/musicas/{{musica.audio}}">
+                    Seu navegador não suporta o elemento de áudio.
+                </audio>
             </div>
-            
-            <div class="form-group animate__animated animate__fadeInUp">
-                <label>Status da Música</label>
-                <div class="status-options">
-                    <div class="status-option">
-                        <input type="radio" id="status-active" name="status" value="active" checked>
-                        <label for="status-active">Ativo</label>
-                    </div>
-                    <div class="status-option">
-                        <input type="radio" id="status-inactive" name="status" value="inactive">
-                        <label for="status-inactive">Inativo</label>
-                    </div>
-                    <div class="status-option">
-                        <input type="radio" id="status-draft" name="status" value="draft">
-                        <label for="status-draft">Rascunho</label>
+
+            <div class="field">
+                <label for="lyrics">Letra</label>
+                <textarea id="lyrics" readonly>{{musica.letra}}</textarea>
+            </div>
+
+            <form method="post" action="/admin/musica/edit/{{musica.id}}" enctype="multipart/form-data">
+                <div class="field">
+                    <label>Atualizar capa</label>
+                    <div class="photo-row">
+                        <img id="coverPreview"
+                            src="{{#if musica.capa}}/uploads/capamusica/{{musica.capa}}{{else}}/img/default.svg{{/if}}"
+                            class="photo-preview" alt="{{musica.titulo}}">
+                        <input type="file" id="coverInput" name="file" accept="image/*">
                     </div>
                 </div>
-            </div>
-            
-            <div class="button-group animate__animated animate__fadeInUp">
-                <div>
-                    <a href="/admin"><button type="button" class="cancel-btn wave-effect">Cancelar</button></a>
-                    <button type="submit" class="save-btn wave-effect">Salvar Alterações</button>
+
+                <div class="form-actions">
+                    <a href="/admin" class="btn btn-ghost"><i class="fas fa-times"></i> Cancelar</a>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar capa</button>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
+
+    <script>
+        var input = document.getElementById('coverInput');
+        var preview = document.getElementById('coverPreview');
+        input.addEventListener('change', function () {
+            var file = this.files && this.files[0];
+            if (file) preview.src = URL.createObjectURL(file);
+        });
+    </script>
 </body>
 </html>

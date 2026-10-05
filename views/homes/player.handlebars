@@ -3,180 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vibewave | Tocando Agora</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <title>Vibewave | {{musica.titulo}}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/vibewave.css">
 </head>
 <body>
-    <div class="app-container player-view">
-        <!-- Navegação Lateral -->
-        <nav class="sidebar">
-            <div class="logo">
-                <span class="logo-icon">VW</span>
-                <span class="logo-text">Vibewave</span>
-            </div>
-            <ul class="nav-links">
-                <li >
-                    <a href="/home">
-                        <i class="fas fa-home"></i>
-                        <span>Início</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/search">
-                        <i class="fas fa-search"></i>
-                        <span>Buscar</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/lybrary">
-                        <i class="fas fa-book"></i>
-                        <span>Sua biblioteca</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/perfil">
-                        <i class="fas fa-user"></i>
-                        <span>Perfil</span>
-                    </a>
-                </li>
-            </ul>
-            <div class="playlists">
-                <h3>Suas Playlists</h3>
-                <ul>
-                    <li><a href="playlist.html">Favoritas</a></li>
-                    <li><a href="Recentemente.html">Reproduzidas Recentemente</a></li>
-                    <li><a href="Treino.html">Mix de Treino</a></li>
-                </ul>
-            </div>
-        </nav>
+    <div class="app-container">
+        {{> mobile-nav}}
+        {{> sidebar active="player"}}
 
-        <!-- Navegação Mobile -->
-        <nav class="mobile-nav">
-            <button class="hamburger">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="mobile-logo">VW</div>
-            <button class="back-button" onclick="window.history.back()">
-                <i class="fas fa-arrow-left"></i>
-            </button>
-        </nav>
-        <audio id="bgAudio" hidden>
+        <audio id="bgAudio" preload="metadata">
             <source src="/uploads/musicas/{{musica.audio}}" type="audio/mpeg">
         </audio>
 
-
-        <!-- Conteúdo Principal -->
         <main class="main-content player-main">
             <section class="player-section">
                 <div class="album-art-container">
                     <div class="album-art">
-                        <img src="/uploads/capamusica/{{musica.capa}}" alt="Capa do Álbum" id="album-art">
+                        {{#if musica.capa}}
+                            <img src="/uploads/capamusica/{{musica.capa}}" alt="Capa de {{musica.titulo}}" id="album-art">
+                        {{else}}
+                            <div class="cover-placeholder" id="album-art"><i class="fas fa-music" style="font-size:3rem;"></i></div>
+                        {{/if}}
                         <div class="vinyl"></div>
                     </div>
                     <canvas id="waveform"></canvas>
                 </div>
 
-    
-
                 <div class="player-info">
+                    <span style="color: var(--primary-light); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px;">Tocando agora</span>
                     <h1 id="song-title">{{musica.titulo}}</h1>
                     <h2 id="song-artist">{{musica.artista.nome}}</h2>
+
                     <div class="song-progress">
-                        <div class="progress-container">
+                        <div class="progress-container" id="progress-container">
+                            <span class="time-current" id="current-time">0:00</span>
                             <div class="progress-bar">
                                 <div class="progress" id="song-progress"></div>
                             </div>
-                            <div class="time-display">
-                                <span id="current-time">0:00</span>
-                                <span id="duration">{{tempo}}</span>
-                            </div>
+                            <span class="time-total" id="duration">{{tempo}}</span>
                         </div>
                     </div>
+
                     <div class="player-buttons">
-                        <button class="player-btn shuffle">
-                            <i class="fas fa-random"></i>
-                        </button>
-                        <button class="player-btn prev">
-                            <i class="fas fa-step-backward"></i>
-                        </button>
-                        <button class="player-btn play" id="play-btn">
-                            <i class="fas fa-play"></i>
-                        </button>
-                        <button class="player-btn next">
-                            <i class="fas fa-step-forward"></i>
-                        </button>
-                        <button class="player-btn repeat">
-                            <i class="fas fa-redo"></i>
-                        </button>
+                        <button class="player-btn shuffle" aria-label="Aleatório"><i class="fas fa-random"></i></button>
+                        <button class="player-btn prev" aria-label="Anterior"><i class="fas fa-step-backward"></i></button>
+                        <button class="player-btn play" id="play-btn" aria-label="Play/Pause"><i class="fas fa-play"></i></button>
+                        <button class="player-btn next" aria-label="Próxima"><i class="fas fa-step-forward"></i></button>
+                        <button class="player-btn repeat" aria-label="Repetir"><i class="fas fa-redo"></i></button>
                     </div>
+
                     <div class="player-options">
-                        <button class="option-btn like">
-                            <i class="far fa-heart"></i>
-                        </button>
-                        <button class="option-btn add-to-playlist">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                        <button class="option-btn share">
-                            <i class="fas fa-share-alt"></i>
-                        </button>
+                        <button class="option-btn like" aria-label="Favoritar"><i class="far fa-heart"></i></button>
+                        <button class="option-btn add-to-playlist" aria-label="Adicionar"><i class="fas fa-plus"></i></button>
+                        <button class="option-btn share" aria-label="Compartilhar"><i class="fas fa-share-alt"></i></button>
                     </div>
                 </div>
-
             </section>
         </main>
-
-        <!-- Rodapé do Player -->
-        <footer class="player-footer">
-            <div class="now-playing">
-                <div class="now-playing-cover">
-                    <img src="assets/img/internet.jpg" alt="Capa Tocando Agora">
-                </div>
-                <div class="now-playing-info">
-                    <h3>A Internet é Toxica</h3>
-                    <p>Mc Saci, Mc Pretchako, Dj LC, Dj João da Inestan</p>
-                </div>
-                <button class="like-btn">
-                    <i class="far fa-heart"></i>
-                </button>
-            </div>
-            <div class="player-controls">
-                <div class="control-buttons">
-                    <button class="control-btn shuffle">
-                        <i class="fas fa-random"></i>
-                    </button>
-                    <button class="control-btn prev">
-                        <i class="fas fa-step-backward"></i>
-                    </button>
-                    <button class="control-btn play">
-                        <i class="fas fa-play"></i>
-                    </button>
-                    <button class="control-btn next">
-                        <i class="fas fa-step-forward"></i>
-                    </button>
-                    <button class="control-btn repeat">
-                        <i class="fas fa-redo"></i>
-                    </button>
-                </div>
-                <div class="progress-container">
-                    <span class="time-current">0:00</span>
-                    <div class="progress-bar">
-                        <div class="progress"></div>
-                    </div>
-                    <span class="time-total">3:45</span>
-                </div>
-            </div>
-            <div class="player-options">
-                <button class="volume-btn">
-                    <i class="fas fa-volume-up"></i>
-                </button>
-                <div class="volume-slider">
-                    <input type="range" min="0" max="100" value="80">
-                </div>
-            </div>
-        </footer>
     </div>
 
     <script src="/js/player.js"></script>
+    <script src="/js/vibewave.js"></script>
 </body>
 </html>

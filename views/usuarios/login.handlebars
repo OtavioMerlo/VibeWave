@@ -1,79 +1,106 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login/Cadastro</title>
-  <link rel="icon" href="">
-  <link rel="stylesheet" href="/css/login.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibewave | Entrar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/vibewave.css">
 </head>
 <body>
+    <div class="auth-page">
+        <div class="auth-card">
+            <div class="logo">
+                <span class="logo-icon"><i class="fas fa-wave-square"></i></span>
+                <span class="logo-text">Vibewave</span>
+            </div>
+            <h1>Bem-vindo de volta</h1>
+            <p class="subtitle">Entre ou crie sua conta para continuar</p>
 
-{{#each erros}}
-    <div class="notification error alert alert-danger">
-    <span class="icon">❌</span>
-    <span class="message">{{texto}}</span>
-    <span class="close-btn">&times;</span>
-  </div>
-{{else}}
-{{/each}}
-{{#if error_msg}}
-  <div class="notification error alert alert-danger">
-    <span class="icon">❌</span>
-    <span class="message">{{error_msg}}</span> <!-- Corrigido aqui -->
-    <span class="close-btn">&times;</span>
-  </div>
-{{/if}}
+            {{#each erros}}
+                <div class="alert alert-danger">{{texto}}</div>
+            {{/each}}
+            {{#if error_msg}}
+                <div class="alert alert-danger">{{error_msg}}</div>
+            {{/if}}
+            {{#if success_msg}}
+                <div class="alert alert-success">{{success_msg}}</div>
+            {{/if}}
 
-{{#if success_msg}}
- <div class="notification success alert-success">
-    <span class="icon">✅</span>
-    <span class="message">{{success_msg}}</span>
-    <span class="close-btn">&times;</span>
-  </div>
-{{/if}}
+            <div class="auth-tabs">
+                <button type="button" class="active" data-auth="login">Entrar</button>
+                <button type="button" data-auth="signup">Cadastrar</button>
+            </div>
 
-<!-- Seu formulário continua aqui -->
+            <form class="auth-form active" id="login-form" action="/usuario/login" method="post">
+                <div class="field">
+                    <label for="login-email">E-mail</label>
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input id="login-email" name="email" type="email" placeholder="seu@email.com" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="login-pass">Senha</label>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input id="login-pass" name="password" type="password" placeholder="Sua senha" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Entrar</button>
+            </form>
 
-
-<div class="particulas"></div>  
-  <div class="container" id="container">
-    <div class="form-container sign-up-container">
-      <form action="./registro" method="post">
-        <h1>Cadastre-se</h1>
-        <input name="nome" type="text" placeholder="Nome de Usuario" />
-        <input name="email" type="email" placeholder="Email" />
-        <input name="senha" type="password" placeholder="Senha" />
-        <input name="senha2" type="password" placeholder="Confirme sua senha" />
-        <button type="submit">Cadastre-se</button>
-        <p>Já tem uma conta? <a href="#" onclick="toggleForm(false)">Login</a></p>
-      </form>
-    </div>
-
-    <div class="form-container sign-in-container">
-      <form action="./login" method="post">
-        <h1>Login</h1>
-        <input name="email" type="email" placeholder="Email" />
-        <input name="password" type="password" placeholder="Senha" />
-        <button onclick="window.location.href='home.html'">Login</button>
-        <p>Não Tem Uma Conta? <a href="#" onclick="toggleForm(true)">Cadastre-se</a></p>
-      </form>
-    </div>
-
-    <div class="overlay-container">
-      <div class="overlay">
-        <div class="overlay-panel overlay-left">
-          <h1>Bem-Vindo!</h1>
-          <p>Vamos começar o show? Cadastre-se e entre para o universo onde você é o DJ da sua própria história. Descubra novos sons, crie playlists incríveis e sinta a música do seu jeito. O palco está pronto — só falta você!.</p>
+            <form class="auth-form" id="signup-form" action="/usuario/registro" method="post">
+                <div class="field">
+                    <label for="signup-name">Nome</label>
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input id="signup-name" name="nome" type="text" placeholder="Seu nome" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="signup-email">E-mail</label>
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input id="signup-email" name="email" type="email" placeholder="seu@email.com" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="signup-pass">Senha</label>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input id="signup-pass" name="senha" type="password" placeholder="Mínimo 8 caracteres" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="signup-pass2">Confirmar senha</label>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input id="signup-pass2" name="senha2" type="password" placeholder="Repita a senha" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Criar conta</button>
+            </form>
         </div>
-        <div class="overlay-panel overlay-right">
-          <h1>Bem-Vindo de Volta!</h1>
-          <p>Seja bem-vindo ao seu cantinho musical! Aqui, cada login é um novo show, cada clique uma nova batida. Aperte o play e deixe a vibe te levar!</p>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <script src="/js/login.js"></script>
+    <script>
+        const authButtons = document.querySelectorAll('[data-auth]');
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+
+        authButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                const target = button.getAttribute('data-auth');
+                authButtons.forEach((b) => b.classList.remove('active'));
+                button.classList.add('active');
+                loginForm.classList.toggle('active', target === 'login');
+                signupForm.classList.toggle('active', target === 'signup');
+            });
+        });
+    </script>
 </body>
 </html>

@@ -1,252 +1,49 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Erro!</title>
+    <title>Vibewave | Não encontrado</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/vibewave.css">
     <style>
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
-        }
-        
-        @keyframes pulseError {
-            0% { box-shadow: 0 0 0 0 rgba(255, 88, 88, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(255, 88, 88, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 88, 88, 0); }
-        }
-        
-        @keyframes flash {
-            0%, 50%, 100% { opacity: 1; }
-            25%, 75% { opacity: 0.3; }
-        }
-        
-        @keyframes lightning {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: #fff;
-            background: linear-gradient(135deg, #3a0a4a, #6a21a8, #8a4fff);
-            background-size: 400% 400%;
-            animation: lightning 8s ease infinite;
-            overflow: hidden;
-        }
-        
-        .error-container {
-            background-color: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 40px;
+        .error-page {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
             text-align: center;
-            max-width: 500px;
-            width: 90%;
-            animation: shake 0.5s ease-in-out, fadeIn 0.8s ease-out;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 24px;
         }
-        
-        .error-container::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
-            animation: flash 4s linear infinite;
+        .error-page .code {
+            font-size: clamp(5rem, 18vw, 11rem);
+            font-weight: 700;
+            line-height: 1;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: drop-shadow(0 12px 30px rgba(139, 92, 246, 0.4));
+            animation: float 3s ease-in-out infinite;
         }
-        
-        .error-icon {
-            color: #ff6b6b;
-            font-size: 80px;
-            margin-bottom: 20px;
-            text-shadow: 0 0 20px rgba(255, 88, 88, 0.7);
-            animation: pulseError 2s infinite;
-            position: relative;
-            z-index: 1;
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-14px); }
         }
-        
-        h1 {
-            color: #fff;
-            margin-bottom: 15px;
-            font-size: 28px;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            position: relative;
-            z-index: 1;
-        }
-        
-        .error-code {
-            background: rgba(0, 0, 0, 0.3);
-            color: #ff9e9e;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-family: monospace;
-            display: inline-block;
-            margin-bottom: 20px;
-            font-size: 14px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        p {
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 30px;
-            line-height: 1.6;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .btn-group {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .btn {
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            border: none;
-            font-weight: 600;
-        }
-        
-        .btn-primary {
-            background-color: #ff6b6b;
-            color: white;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
-        }
-        
-        .btn-primary:hover {
-            background-color: #ff5252;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 82, 82, 0.6);
-        }
-        
-        .btn-secondary {
-            background-color: transparent;
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .btn-secondary:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-        
-        .crack {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            opacity: 0.5;
-        }
-        
-        .crack::before {
-            content: '';
-            position: absolute;
-            width: 2px;
-            height: 150%;
-            background: white;
-            left: 30%;
-            top: -25%;
-            transform: rotate(20deg);
-            box-shadow: 0 0 10px white;
-        }
-        
-        .crack::after {
-            content: '';
-            position: absolute;
-            width: 2px;
-            height: 120%;
-            background: white;
-            right: 25%;
-            top: -10%;
-            transform: rotate(-15deg);
-            box-shadow: 0 0 10px white;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        .error-page h1 { margin: 8px 0 10px; }
+        .error-page p { color: var(--text-muted); margin-bottom: 26px; }
     </style>
 </head>
 <body>
-    <div class="error-container">
-        <div class="crack"></div>
-        <div class="error-icon">✕</div>
-        <h1>Ocorreu um Erro!</h1>
-        <div class="error-code">ERRO:</div>
-        {{#if err}}
-        <p>{{err}}</p>
-        {{else}}
-        <p>Não foi possível completar sua solicitação. O servidor retornou um erro inesperado. Por favor, tente novamente mais tarde ou entre em contato com o suporte.</p>
-        {{/if}}
-        
-        <div class="btn-group">
-            <a href="#" class="btn btn-primary">Tentar Novamente</a>
-            <a href="#" class="btn btn-secondary">Contatar Suporte</a>
+    <div class="error-page">
+        <div>
+            <div class="code">404</div>
+            <h1>Página não encontrada</h1>
+            <p>A música que você procura saiu de turnê. Vamos voltar ao início?</p>
+            <a href="/home" class="btn btn-primary"><i class="fas fa-home"></i> Voltar para o início</a>
         </div>
     </div>
-    
-    <script>
-        // Efeito adicional de partículas
-        document.addEventListener('DOMContentLoaded', function() {
-            const container = document.querySelector('.error-container');
-            
-            // Cria partículas de erro
-            for (let i = 0; i < 20; i++) {
-                const particle = document.createElement('div');
-                particle.style.position = 'absolute';
-                particle.style.width = Math.random() * 5 + 2 + 'px';
-                particle.style.height = particle.style.width;
-                particle.style.backgroundColor = i % 2 === 0 ? '#ff6b6b' : '#ffffff';
-                particle.style.borderRadius = '50%';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.opacity = Math.random() * 0.5 + 0.1;
-                particle.style.animation = `float ${Math.random() * 5 + 3}s ease-in-out infinite`;
-                
-                container.appendChild(particle);
-            }
-            
-            // Efeito de digitação no código de erro
-            const errorCode = document.querySelector('.error-code');
-            const fullText = errorCode.textContent;
-            errorCode.textContent = '';
-            
-            let i = 0;
-            const typingEffect = setInterval(() => {
-                if (i < fullText.length) {
-                    errorCode.textContent += fullText.charAt(i);
-                    i++;
-                } else {
-                    clearInterval(typingEffect);
-                }
-            }, 50);
-        });
-    </script>
 </body>
 </html>

@@ -1,36 +1,67 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/db');
 
-const ArtistaSchema = mongoose.Schema({
-  nome:{
-    type:String,
-  },
-  pais:{
-    type:String,
-  },
-  genero_musical:{
-    type:String,
-  },
-  status:{
-    type:String
-  },
-  biografia:{
-    type:String
-  },
-  foto:{
-    type:String
-  },
-  website:{
-    type:String
-  },
-  datanas:{
-    type:Date
-  },
-  plataforma:{
-    type:String
-  },
-  handle:{
-    type:String
-  }
-})
+const Artista = sequelize.define('artists', {
 
-mongoose.model("artistas",ArtistaSchema)
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+
+    nome: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+
+    pais: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+
+    genero_musical: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+
+    status: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'Ativo'
+    },
+
+    biografia: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+
+    foto: {
+        type: DataTypes.STRING,
+        defaultValue: 'default.png'
+    },
+
+    website: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+
+    datanas: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
+
+    plataforma: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+
+    handle: {
+        type: DataTypes.STRING,
+        allowNull: true
+    }
+
+}, {
+    tableName: 'artists'
+});
+
+module.exports = Artista;
