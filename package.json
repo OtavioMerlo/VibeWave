@@ -1,4 +1,12 @@
 {
+  "name": "vibewave",
+  "version": "1.5.0",
+  "description": "Aplicação web de streaming de música com Node.js, Express, Handlebars, MySQL e Sequelize",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@ffprobe-installer/ffprobe": "^2.1.2",

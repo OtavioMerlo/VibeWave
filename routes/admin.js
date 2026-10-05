@@ -14,6 +14,8 @@ const aaudio = require("../config/analiseaudio");
 
 const toPlain = (rows) => rows.map((row) => row.get({ plain: true }));
 
+router.use(eAdmin);
+
 router.get('/', async (req, res) => {
   try {
     const [artistas, musicas, usuarios] = await Promise.all([

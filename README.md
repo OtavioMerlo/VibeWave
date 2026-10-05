@@ -88,6 +88,9 @@ cd VibeWave
 
 # 2. Instale as dependências
 npm install
+
+# 3. Suba o projeto
+npm run dev
 ```
 
 ---
@@ -134,15 +137,20 @@ UPDATE users SET isAdmin = true WHERE email = 'seu@email.com';
 
 ## Executando o Projeto
 
-O `package.json` ainda não define scripts, então utilize o Nodemon diretamente:
+O `package.json` define os scripts de execução:
+
+```bash
+# Desenvolvimento (com hot reload via Nodemon)
+npm run dev
+
+# Produção
+npm start
+```
+
+Ou, diretamente:
 
 ```bash
 npx nodemon app.js
-```
-
-Ou, sem hot reload:
-
-```bash
 node app.js
 ```
 
@@ -158,22 +166,6 @@ Saída esperada no terminal:
 Banco de dados sincronizado!
 Rodando na porta 8089
 ```
-
-<details>
-<summary><b>Adicionando scripts ao package.json (recomendado)</b></summary>
-
-```json
-{
-  "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
-  }
-}
-```
-
-Depois basta usar `npm start` / `npm run dev`.
-
-</details>
 
 ---
 
@@ -427,6 +419,12 @@ duracao: Math.round(meta.duration) || 0
 **Arquivos novos no commit anterior**
 `public/css/admin.css`, `public/css/vibewave.css`, `public/js/vibewave.js`, `public/img/default.svg`, `views/partials/*`, `views/sucess/sucess.handlebars`.
 
+### Correções de segurança e DX
+
+- **Proteção do painel administrativo** — `router.use(eAdmin)` aplicado a todas as rotas de `/admin` em `routes/admin.js`. Anteriormente o painel era acessível a qualquer visitante.
+- **`eAdmin` endurecido** — verificação defensiva de `isAuthenticated` e `req.user`, evitando erro 500 caso o contexto do Passport não esteja disponível.
+- **Scripts no `package.json`** — adicionados `npm start` e `npm run dev` (Nodemon), além de `name`, `version`, `description` e `main`.
+
 ### v0 — Versão inicial
 - Estrutura Express Handlebars com rotas de login, home e player.
 - Integração inicial com MongoDB e MySQL.
@@ -439,13 +437,11 @@ duracao: Math.round(meta.duration) || 0
 Antes de colocar o projeto em produção, considere:
 
 - **Credenciais no código** — `config/db.js` e o segredo de sessão em `app.js` estão versionados. Migrar para variáveis de ambiente (`.env` com `dotenv`) e rotacionar o segredo de sessão.
-- **`eAdmin` sem uso** — o helper existe e está correto, mas não está aplicado às rotas de `/admin`; qualquer visitante consegue acessar o painel. Adicionar `router.use(eAdmin)` em `routes/admin.js`.
 - **Uploads sem limite de tamanho** — `multerconfig.js` não define `limits.fileSize` nem filtro de mimetype para o áudio.
 - **Exclusão de registros** — usar formulários com `POST` já evita *method override*, mas não há verificação de posse do recurso nem confirmação.
 - **Senha do usuário validada em dois lugares** — o modelo exige 8–100 caracteres, enquanto o formulário de registro aceita 4+. Alinhar as regras.
 - **Sem store de sessão** — `express-session` usa o `MemoryStore` padrão, que perde as sessões a cada reinício e não escala. Considerar `connect-mysql2` ou similar.
 - **Nenhuma biblioteca de testes** — não há suíte automatizada configurada.
-- **Scripts de npm ausentes** — adicionados manualmente via `npx`; vale incluir `start` e `dev` no `package.json`.
 - **Recursos ainda estáticos** — favoritos, histórico de reprodução e playlists não são persistidos; as páginas `/playlist`, `/recentemente` e `/treino` exibem o catálogo completo como placeholders.
 - **Código legado** — `public/js/main.js` ainda contém dados mockados e não é carregado pelas views atuais; pode ser removido.
 
