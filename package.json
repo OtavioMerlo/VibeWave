@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "test": "node tests/render.test.js && node tests/player.test.js && node tests/spa.test.js",
+    "test": "node tests/render.test.js && node tests/player.test.js && node tests/spa.test.js && node tests/csrf.test.js",
     "admin": "node scripts/criar-admin.js"
   },
   "dependencies": {

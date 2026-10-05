@@ -4,7 +4,7 @@ const path = require('path');
 const { fn, col } = require('sequelize');
 
 const { eAdmin } = require('../helpers/eAdmin');
-const { csrfVerify } = require('../helpers/csrf');
+const { csrfVerify, verificarCsrfAposUpload } = require('../helpers/csrf');
 const {
     paginaAtual,
     termoBusca,
@@ -201,7 +201,7 @@ router.get('/musicas/:id/editar', validarId, async (req, res) => {
     }
 });
 
-router.post('/musicas', uploadMusica.single('audio'), async (req, res) => {
+router.post('/musicas', uploadMusica.single('audio'), verificarCsrfAposUpload, async (req, res) => {
     let enviado = null;
 
     try {
@@ -272,7 +272,7 @@ router.post('/musicas', uploadMusica.single('audio'), async (req, res) => {
     }
 });
 
-router.post('/musicas/:id', validarId, uploadMusica.single('audio'), async (req, res) => {
+router.post('/musicas/:id', validarId, uploadMusica.single('audio'), verificarCsrfAposUpload, async (req, res) => {
     let enviado = null;
 
     try {
@@ -343,7 +343,7 @@ router.post('/musicas/:id', validarId, uploadMusica.single('audio'), async (req,
     }
 });
 
-router.post('/musicas/:id/capa', validarId, uploadCapa.single('capa'), async (req, res) => {
+router.post('/musicas/:id/capa', validarId, uploadCapa.single('capa'), verificarCsrfAposUpload, async (req, res) => {
     let enviado = null;
 
     try {
@@ -490,7 +490,7 @@ router.get('/artistas/:id/editar', validarId, async (req, res) => {
     }
 });
 
-router.post('/artistas', uploadArtista.single('foto'), async (req, res) => {
+router.post('/artistas', uploadArtista.single('foto'), verificarCsrfAposUpload, async (req, res) => {
     let enviado = null;
 
     try {
@@ -552,7 +552,7 @@ router.post('/artistas', uploadArtista.single('foto'), async (req, res) => {
     }
 });
 
-router.post('/artistas/:id', validarId, uploadArtista.single('foto'), async (req, res) => {
+router.post('/artistas/:id', validarId, uploadArtista.single('foto'), verificarCsrfAposUpload, async (req, res) => {
     let enviado = null;
 
     try {

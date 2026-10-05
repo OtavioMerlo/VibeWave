@@ -572,6 +572,7 @@ atributos não são escritos à mão nos templates.
 6. `helpers/eLogado.js` redireciona visitantes para `/usuario/login` preservando o destino em `?redirect=`.
 7. `helpers/eAdmin.js` redireciona quem não está autenticado e devolve **403** para quem está autenticado mas não é administrador.
 8. **CSRF**: `helpers/csrf.js` gera um token por sessão (`csrfToken`, exposto em `res.locals`) e `csrfVerify` valida o campo `_csrf` em todo POST/PUT/PATCH/DELETE, usando `timingSafeEqual` e conferindo `Origin`/`Referer` quando presentes. Os routers de login e admin aplicam o middleware; GET nunca é bloqueado.
+   - **Formulários com upload** (artista, música e capa) usam `multipart/form-data`. Como o `csrfVerify` é um `router.use` e o `multer` só entra na rota, `req.body` ainda está vazio quando ele roda — conferir o token ali reprovaria **todo** upload legítimo com 403. Nesse caso a conferência é adiada para `verificarCsrfAposUpload`, ligado logo após o `multer`, e o arquivo rejeitado é apagado do disco. A checagem de `Origin`/`Referer`, que não depende do corpo, continua rodando antes de qualquer gravação.
 9. O campo que concede acesso ao painel é `users.isAdmin`.
 
 ---
@@ -579,6 +580,12 @@ atributos não são escritos à mão nos templates.
 ## Changelog
 
 ### v1.6 — Painel administrativo, player persistente e neon
+
+**Formulários com upload**
+- **Corrigido**: os cinco formulários `multipart/form-data` (criar/editar artista, criar/editar música e enviar capa) respondiam **403 "Token de segurança inválido"** em toda tentativa de envio. `csrfVerify` é um `router.use` e roda antes do `multer` da rota, então `req.body` ainda estava vazio e o campo `_csrf` não existia. Nenhuma rota de escrita precisou mudar: a conferência do token foi adiada para `verificarCsrfAposUpload`, aplicado logo após o `multer`.
+- O upload rejeitado agora é **apagado do disco**, para não deixar arquivo órfão de uma requisição não autorizada.
+- A checagem de `Origin`/`Referer` continua antes de qualquer gravação: um POST vindo de outro site não chega a escrever arquivo.
+- `tests/csrf.test.js` (13 verificações) trava o comportamento nos dois momentos.
 
 **Segurança**
 - **CSRF próprio** (`helpers/csrf.js`): token por sessão, comparação com `timingSafeEqual` e checagem de `Origin`/`Referer`. Aplicado em `routes/login.js` e `routes/admin.js` via `router.use(csrfVerify)`.
@@ -695,6 +702,7 @@ npm test
 - `tests/render.test.js` — carrega os **helpers reais de `app.js`**, renderiza todas as views com dados de exemplo e falha se sobrar Handlebars não processado, `undefined`, `[object Object]` ou **token CSRF vazio** (a causa clássica de formulários que enviam `_csrf=""`).
 - `tests/player.test.js` — simula `document`, `localStorage` e `Audio` para validar o ciclo de persistência do `player-core.js`: tocar, salvar, **restaurar em outra navegação**, pausar, mudar volume, mudo, buscar posição e limpar o estado.
 - `tests/spa.test.js` — simula o DOM e o `fetch` para validar a decisão de navegação do `spa.js`: o que é interceptado e o que não é, a troca de conteúdo, título, `pushState`, o fallback para `location.assign` e a garantia de que **uma falha cosmética nunca recarrega a página**.
+- `tests/csrf.test.js` — exercita `helpers/csrf.js` sem subir o Express: métodos seguros, `urlencoded` válido e inválido, o **adiamento em `multipart`**, o bloqueio de origem externa *antes* do upload, e a limpeza do arquivo no disco quando o token é recusado depois do `multer`.
 
 ---
 
