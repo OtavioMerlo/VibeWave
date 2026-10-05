@@ -9,63 +9,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/vibewave.css">
-    <style>
-        .search-bar {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-pill);
-            padding: 12px 20px;
-            margin-bottom: 36px;
-            transition: var(--transition);
-        }
-        .search-bar:focus-within {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px var(--primary-soft);
-        }
-        .search-bar i { color: var(--text-dim); }
-        .search-bar input {
-            border: none;
-            background: transparent;
-            padding: 0;
-            font-size: 1rem;
-        }
-        .search-bar input:focus { box-shadow: none; }
-
-        .categorias {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 18px;
-        }
-        .categorias .card {
-            position: relative;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px;
-            min-height: 130px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        .categorias .card:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
-        .categorias .card h4 { font-size: 1.05rem; font-weight: 600; position: relative; z-index: 2; }
-        .categorias .card i {
-            position: absolute;
-            right: -8px;
-            bottom: -12px;
-            font-size: 4.5rem;
-            opacity: 0.25;
-            transform: rotate(-18deg);
-        }
-        .grad-1 { background: linear-gradient(135deg, #8b5cf6, #6366f1); }
-        .grad-2 { background: linear-gradient(135deg, #ec4899, #8b5cf6); }
-        .grad-3 { background: linear-gradient(135deg, #06b6d4, #3b82f6); }
-        .grad-4 { background: linear-gradient(135deg, #f59e0b, #ef4444); }
-        .grad-5 { background: linear-gradient(135deg, #10b981, #06b6d4); }
-        .grad-6 { background: linear-gradient(135deg, #ef4444, #f97316); }
-    </style>
 </head>
 <body>
     <div class="app-container">
@@ -78,32 +21,75 @@
                 <div class="theme-toggle" role="button" aria-label="Alternar tema"><i class="fas fa-moon"></i></div>
             </header>
 
-            <div class="search-bar">
+            <form class="search-bar" action="/search" method="get" role="search">
                 <i class="fas fa-search"></i>
-                <input type="search" placeholder="O que você quer ouvir?" aria-label="Buscar">
-            </div>
+                <input type="search" name="q" value="{{termo}}" placeholder="O que você quer ouvir?"
+                       aria-label="Buscar músicas e artistas" autofocus>
+                <button type="submit" class="btn btn-primary btn-sm">Buscar</button>
+            </form>
 
-            <section class="categorias">
-                <div class="card grad-1"><h4>Música</h4><i class="fas fa-music"></i></div>
-                <div class="card grad-2"><h4>Eventos ao vivo</h4><i class="fas fa-microphone-lines"></i></div>
-                <div class="card grad-3"><h4>Feito para você</h4><i class="fas fa-wand-magic-sparkles"></i></div>
-                <div class="card grad-4"><h4>Lançamentos</h4><i class="fas fa-rocket"></i></div>
-                <div class="card grad-5"><h4>Brasil</h4><i class="fas fa-earth-americas"></i></div>
-                <div class="card grad-6"><h4>Sertanejo</h4><i class="fas fa-guitar"></i></div>
-                <div class="card grad-1"><h4>Funk</h4><i class="fas fa-drum"></i></div>
-                <div class="card grad-2"><h4>Samba e pagode</h4><i class="fas fa-drum-steelpan"></i></div>
-                <div class="card grad-3"><h4>Podcasts</h4><i class="fas fa-podcast"></i></div>
-                <div class="card grad-4"><h4>Hip Hop</h4><i class="fas fa-headphones"></i></div>
-                <div class="card grad-5"><h4>Rap</h4><i class="fas fa-microphone"></i></div>
-                <div class="card grad-6"><h4>MPB</h4><i class="fas fa-compact-disc"></i></div>
-                <div class="card grad-1"><h4>Rock</h4><i class="fas fa-guitar"></i></div>
-                <div class="card grad-2"><h4>Internacional</h4><i class="fas fa-globe"></i></div>
+            {{#if termo}}
+            <section class="search-results">
+                <h2>Resultados para <strong>"{{termo}}"</strong></h2>
+
+                {{#if musicas.length}}
+                <h3>Músicas ({{musicas.length}})</h3>
+                <div class="track-list" data-fila>
+                    {{#each musicas}}
+                        {{> track-item this}}
+                    {{/each}}
+                </div>
+                {{/if}}
+
+                {{#if artistas.length}}
+                <h3>Artistas ({{artistas.length}})</h3>
+                <div class="artists-grid">
+                    {{#each artistas}}
+                    <div class="artist-card">
+                        <div class="artist-avatar">
+                            <img src="{{#if this.foto}}/uploads/artistas/{{this.foto}}{{else}}/img/default.svg{{/if}}" alt="{{this.nome}}" loading="lazy"
+                                 onerror="this.onerror=null;this.src='/img/default.svg'">
+                        </div>
+                        <h3>{{this.nome}}</h3>
+                        <p>{{this.genero_musical}}</p>
+                        <a class="track-btn" href="/search?q={{#if this.nome}}{{this.nome}}{{/if}}" title="Ver músicas de {{this.nome}}" aria-label="Ver músicas de {{this.nome}}">
+                            <i class="fas fa-music"></i>
+                        </a>
+                    </div>
+                    {{/each}}
+                </div>
+                {{/if}}
+
+                {{#unless musicas.length}}
+                    {{#unless artistas.length}}
+                    <p class="empty-state">Nada encontrado para "{{termo}}". Tente outro termo.</p>
+                    {{/unless}}
+                {{/unless}}
             </section>
+            {{else}}
+            <section class="categorias">
+                <a class="card grad-1" href="/search?q=Música"><h4>Música</h4><i class="fas fa-music"></i></a>
+                <a class="card grad-2" href="/search?q=Eventos"><h4>Eventos ao vivo</h4><i class="fas fa-microphone-lines"></i></a>
+                <a class="card grad-3" href="/search?q=Feito para você"><h4>Feito para você</h4><i class="fas fa-wand-magic-sparkles"></i></a>
+                <a class="card grad-4" href="/search?q=Lançamentos"><h4>Lançamentos</h4><i class="fas fa-rocket"></i></a>
+                <a class="card grad-5" href="/search?q=Brasil"><h4>Brasil</h4><i class="fas fa-earth-americas"></i></a>
+                <a class="card grad-6" href="/search?q=Sertanejo"><h4>Sertanejo</h4><i class="fas fa-guitar"></i></a>
+                <a class="card grad-1" href="/search?q=Funk"><h4>Funk</h4><i class="fas fa-drum"></i></a>
+                <a class="card grad-2" href="/search?q=Samba"><h4>Samba e pagode</h4><i class="fas fa-drum-steelpan"></i></a>
+                <a class="card grad-3" href="/search?q=Podcast"><h4>Podcasts</h4><i class="fas fa-podcast"></i></a>
+                <a class="card grad-4" href="/search?q=Hip Hop"><h4>Hip Hop</h4><i class="fas fa-headphones"></i></a>
+                <a class="card grad-5" href="/search?q=Rap"><h4>Rap</h4><i class="fas fa-microphone"></i></a>
+                <a class="card grad-6" href="/search?q=MPB"><h4>MPB</h4><i class="fas fa-compact-disc"></i></a>
+                <a class="card grad-1" href="/search?q=Rock"><h4>Rock</h4><i class="fas fa-guitar"></i></a>
+                <a class="card grad-2" href="/search?q=Internacional"><h4>Internacional</h4><i class="fas fa-globe"></i></a>
+            </section>
+            {{/if}}
         </main>
 
         {{> player-footer}}
     </div>
 
+    <script src="/js/player-core.js"></script>
     <script src="/js/vibewave.js"></script>
 </body>
 </html>

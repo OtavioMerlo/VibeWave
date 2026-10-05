@@ -1,0 +1,101 @@
+{{#if erro}}
+<div class="alert alert-danger">
+    <i class="fas fa-circle-exclamation"></i>
+    <span>Não foi possível salvar. Revise os campos destacados abaixo.</span>
+</div>
+{{/if}}
+
+<div class="page-top">
+    <div>
+        <h1>Artistas</h1>
+        <p>{{paginacao.total}} artista(s) cadastrado(s).</p>
+    </div>
+    <div class="page-top-actions">
+        <a href="/admin/artistas/nova" class="btn btn-primary"><i class="fas fa-plus"></i> Novo artista</a>
+    </div>
+</div>
+
+<form class="filter-bar" method="get" action="/admin/artistas">
+    <div class="filter-search">
+        <i class="fas fa-magnifying-glass"></i>
+        <input type="search" name="q" value="{{filtros.q}}" placeholder="Buscar por nome, gênero ou país...">
+    </div>
+    <select name="status">
+        <option value="">Todos os status</option>
+        {{#each opcoes.STATUS_ARTISTA}}
+        <option value="{{this}}" {{#eq this ../../filtros.status}}selected{{/eq}}>{{this}}</option>
+        {{/each}}
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-filter"></i> Filtrar</button>
+    <a href="/admin/artistas" class="btn btn-ghost btn-sm">Limpar</a>
+</form>
+
+<section class="panel">
+    <div class="panel-body">
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Foto</th>
+                        <th>Nome</th>
+                        <th>Gênero</th>
+                        <th>País</th>
+                        <th>Músicas</th>
+                        <th>Status</th>
+                        <th class="col-acoes">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each artistas}}
+                    <tr>
+                        <td>
+                            <img class="avatar" src="{{#if foto}}/uploads/artistas/{{foto}}{{else}}/img/default.svg{{/if}}" alt="{{nome}}" loading="lazy"
+                                 onerror="this.onerror=null;this.src='/img/default.svg'">
+                        </td>
+                        <td><strong>{{nome}}</strong></td>
+                        <td>{{genero_musical}}</td>
+                        <td>{{pais}}</td>
+                        <td>
+                            {{#if musicasTotal}}
+                                <span class="badge badge-gray">{{musicasTotal}}</span>
+                            {{else}}
+                                <span class="text-dim">0</span>
+                            {{/if}}
+                        </td>
+                        <td>
+                            <span class="badge {{#eq status 'Ativo'}}badge-green{{/eq}}{{#eq status 'Inativo'}}badge-gray{{/eq}}{{#eq status 'Pausa'}}badge-yellow{{/eq}}">{{status}}</span>
+                        </td>
+                        <td class="col-acoes">
+                            <div class="actions-cell">
+                                <a href="/admin/artistas/{{id}}/editar" class="btn btn-ghost btn-sm" title="Editar" aria-label="Editar">
+                                    <i class="fas fa-pen"></i>
+                                </a>
+                                {{> excluir
+                                    action=(concat '/admin/artistas/' id '/excluir')
+                                    confirmacao=(concat 'Excluir o artista "' nome '"? ' (ternario musicasTotal (concat 'As ' musicasTotal ' música(s) vinculadas também serão apagadas. ') '') 'Esta ação não pode ser desfeita.')
+                                    confirmarTitulo="Confirmar exclusão de artista"
+                                    extras=musicasTotal
+                                    rotulo="Excluir"}}
+                            </div>
+                        </td>
+                    </tr>
+                    {{else}}
+                    <tr><td colspan="7" class="empty-row">Nenhum artista encontrado com esses filtros.</td></tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+{{#if paginacao.temMaisPaginas}}
+<nav class="pager">
+    {{#if paginacao.temAnterior}}
+        <a href="/admin/artistas{{queryAnterior}}" class="btn btn-ghost btn-sm"><i class="fas fa-chevron-left"></i> Anterior</a>
+    {{/if}}
+    <span>Página {{paginacao.pagina}} de {{paginacao.paginas}}</span>
+    {{#if paginacao.temProxima}}
+        <a href="/admin/artistas{{queryProxima}}" class="btn btn-ghost btn-sm">Próxima <i class="fas fa-chevron-right"></i></a>
+    {{/if}}
+</nav>
+{{/if}}

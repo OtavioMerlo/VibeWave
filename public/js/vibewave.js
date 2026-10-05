@@ -65,83 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    /* ---------- Mini player global ---------- */
-    const audio = document.getElementById('global-audio');
-    const playBtn = document.getElementById('global-play');
-    const footer = document.querySelector('.player-footer');
-
-    if (audio && playBtn && footer) {
-        const progress = footer.querySelector('.progress');
-        const progressBar = footer.querySelector('.progress-bar');
-        const currentLabel = footer.querySelector('.time-current');
-        const totalLabel = footer.querySelector('.time-total');
-        const volume = footer.querySelector('.volume-slider input');
-        const volumeBtn = footer.querySelector('.volume-btn');
-
-        const formatTime = (seconds) => {
-            if (!seconds || isNaN(seconds)) return '0:00';
-            const min = Math.floor(seconds / 60);
-            const sec = Math.floor(seconds % 60);
-            return `${min}:${sec.toString().padStart(2, '0')}`;
-        };
-
-        const setPlayIcon = (playing) => {
-            playBtn.innerHTML = playing
-                ? '<i class="fas fa-pause"></i>'
-                : '<i class="fas fa-play"></i>';
-        };
-
-        playBtn.addEventListener('click', () => {
-            if (audio.paused) {
-                audio.play();
-                setPlayIcon(true);
-            } else {
-                audio.pause();
-                setPlayIcon(false);
-            }
-        });
-
-        audio.addEventListener('timeupdate', () => {
-            const percent = (audio.currentTime / audio.duration) * 100 || 0;
-            if (progress) progress.style.width = `${percent}%`;
-            if (currentLabel) currentLabel.textContent = formatTime(audio.currentTime);
-        });
-
-        audio.addEventListener('loadedmetadata', () => {
-            if (totalLabel) totalLabel.textContent = formatTime(audio.duration);
-        });
-
-        audio.addEventListener('ended', () => {
-            setPlayIcon(false);
-            if (progress) progress.style.width = '0%';
-            if (currentLabel) currentLabel.textContent = '0:00';
-        });
-
-        if (progressBar) {
-            progressBar.addEventListener('click', (event) => {
-                const width = progressBar.clientWidth;
-                if (width && audio.duration) {
-                    audio.currentTime = (event.offsetX / width) * audio.duration;
-                }
-            });
-        }
-
-        if (volume && audio) {
-            audio.volume = volume.value / 100;
-            volume.addEventListener('input', () => {
-                audio.volume = volume.value / 100;
-            });
-        }
-
-        if (volumeBtn && audio) {
-            volumeBtn.addEventListener('click', () => {
-                audio.muted = !audio.muted;
-                volumeBtn.innerHTML = audio.muted
-                    ? '<i class="fas fa-volume-mute"></i>'
-                    : '<i class="fas fa-volume-up"></i>';
-            });
-        }
-    }
+    /* O player (áudio, barra de progresso, volume e fila) é controlado
+       por public/js/player-core.js. Não duplicar essa lógica aqui. */
 });
 
 /* ---------- Utilitários de modal ---------- */

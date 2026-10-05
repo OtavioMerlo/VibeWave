@@ -1,0 +1,126 @@
+<div class="page-top">
+    <div>
+        <h1>Usuários</h1>
+        <p>{{paginacao.total}} conta(s) registrada(s).</p>
+    </div>
+</div>
+
+<form class="filter-bar" method="get" action="/admin/usuarios">
+    <div class="filter-search">
+        <i class="fas fa-magnifying-glass"></i>
+        <input type="search" name="q" value="{{filtros.q}}" placeholder="Buscar por nome ou e-mail...">
+    </div>
+    <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-filter"></i> Filtrar</button>
+    <a href="/admin/usuarios" class="btn btn-ghost btn-sm">Limpar</a>
+</form>
+
+<section class="panel">
+    <div class="panel-body">
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Foto</th>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Admin</th>
+                        <th class="col-acoes">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each usuarios}}
+                    <tr>
+                        <td>
+                            <img class="avatar" src="{{#if foto}}/uploads/FotoUser/{{foto}}{{else}}/img/default.svg{{/if}}" alt="{{name}}" loading="lazy"
+                                 onerror="this.onerror=null;this.src='/img/default.svg'">
+                        </td>
+                        <td>
+                            <strong>{{name}}</strong>
+                            {{#eq id ../../user.id}}<span class="badge badge-cyan">você</span>{{/eq}}
+                        </td>
+                        <td>{{email}}</td>
+                        <td>
+                            {{#if isAdmin}}
+                                <span class="badge badge-green">Sim</span>
+                            {{else}}
+                                <span class="badge badge-gray">Não</span>
+                            {{/if}}
+                        </td>
+                        <td class="col-acoes">
+                            {{#if isAdmin}}
+                            <div class="actions-cell">
+                                <form action="/admin/usuarios/{{id}}/admin" method="post" class="inline-form"
+                                      data-confirm="Revogar o acesso de administrador de {{name}}?"
+                                      data-confirm-titulo="Revogar acesso">
+                                    <input type="hidden" name="_csrf" value="{{@root.csrfToken}}">
+                                    <input type="hidden" name="acao" value="revogar">
+                                    <button type="submit" class="btn btn-ghost btn-sm" title="Revogar admin" aria-label="Revogar acesso de administrador">
+                                        <i class="fas fa-user-minus"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            {{else}}
+                            <div class="actions-cell">
+                                <form action="/admin/usuarios/{{id}}/admin" method="post" class="inline-form">
+                                    <input type="hidden" name="_csrf" value="{{@root.csrfToken}}">
+                                    <input type="hidden" name="acao" value="promover">
+                                    <button type="submit" class="btn btn-ghost btn-sm" title="Tornar admin" aria-label="Tornar administrador">
+                                        <i class="fas fa-user-shield"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            {{/if}}
+
+                            <button type="button" class="btn btn-ghost btn-sm" data-open-dialog="senhaDialog-{{id}}"
+                                    title="Redefinir senha" aria-label="Redefinir senha">
+                                <i class="fas fa-key"></i>
+                            </button>
+
+                            {{#neq id ../user.id}}
+                                {{> excluir
+                                    action=(concat '/admin/usuarios/' id '/excluir')
+                                    confirmacao=(concat 'Excluir a conta de "' name '"? O usuário não poderá mais entrar no VibeWave.')
+                                    rotulo="Excluir"}}
+                            {{/neq}}
+                        </td>
+                    </tr>
+
+                    <dialog class="preview-dialog" id="senhaDialog-{{id}}">
+                        <button type="button" class="close-x" data-close-dialog aria-label="Fechar">&times;</button>
+                        <h3>Redefinir senha de {{name}}</h3>
+                        <form method="post" action="/admin/usuarios/{{id}}/senha">
+                            <input type="hidden" name="_csrf" value="{{@root.csrfToken}}">
+                            <div class="field">
+                                <label for="senha-{{id}}">Nova senha</label>
+                                <input type="password" id="senha-{{id}}" name="senha" minlength="8" required>
+                            </div>
+                            <div class="field">
+                                <label for="senha2-{{id}}">Confirmar senha</label>
+                                <input type="password" id="senha2-{{id}}" name="senha2" minlength="8" required>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-ghost btn-sm" data-close-dialog>Cancelar</button>
+                                <button type="submit" class="btn btn-primary btn-sm">Salvar senha</button>
+                            </div>
+                        </form>
+                    </dialog>
+                    {{else}}
+                    <tr><td colspan="5" class="empty-row">Nenhum usuário encontrado.</td></tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+{{#if paginacao.temMaisPaginas}}
+<nav class="pager">
+    {{#if paginacao.temAnterior}}
+        <a href="/admin/usuarios{{queryAnterior}}" class="btn btn-ghost btn-sm"><i class="fas fa-chevron-left"></i> Anterior</a>
+    {{/if}}
+    <span>Página {{paginacao.pagina}} de {{paginacao.paginas}}</span>
+    {{#if paginacao.temProxima}}
+        <a href="/admin/usuarios{{queryProxima}}" class="btn btn-ghost btn-sm">Próxima <i class="fas fa-chevron-right"></i></a>
+    {{/if}}
+</nav>
+{{/if}}

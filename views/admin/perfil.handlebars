@@ -1,0 +1,65 @@
+<div class="page-top">
+    <div>
+        <h1>Meu acesso</h1>
+        <p>Gerencie a sua senha de administrador.</p>
+    </div>
+</div>
+
+<div class="grid-2">
+    <section class="panel">
+        <div class="panel-head">
+            <h2><i class="fas fa-id-card"></i> Seus dados</h2>
+        </div>
+        <div class="panel-body">
+            <div class="mini-item">
+                <img class="avatar" src="{{#if user.foto}}/uploads/FotoUser/{{user.foto}}{{else}}/img/default.svg{{/if}}" alt="{{user.name}}" loading="lazy"
+                     onerror="this.onerror=null;this.src='/img/default.svg'">
+                <div class="mini-info">
+                    <strong>{{user.name}}</strong>
+                    <small>{{user.email}}</small>
+                </div>
+                <span class="badge badge-green">Admin</span>
+            </div>
+            <div class="form-actions">
+                <a href="/home" class="btn btn-ghost btn-sm"><i class="fas fa-headphones"></i> Ir para o app</a>
+                <a href="/usuario/logout" class="btn btn-danger btn-sm"><i class="fas fa-right-from-bracket"></i> Sair</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-head">
+            <h2><i class="fas fa-lock"></i> Trocar senha</h2>
+        </div>
+        <div class="panel-body">
+            <form method="post" action="/admin/perfil/senha" class="admin-form">
+                <input type="hidden" name="_csrf" value="{{@root.csrfToken}}">
+
+                <div class="field">
+                    <label for="senhaAtual">Senha atual *</label>
+                    <input type="password" id="senhaAtual" name="senhaAtual" required class="{{#if erro.senhaAtual}}is-invalid{{/if}}">
+                    {{#if erro.senhaAtual}}<small class="field-error">{{erro.senhaAtual}}</small>{{/if}}
+                </div>
+
+                <div class="field">
+                    <label for="senhaNova">Nova senha *</label>
+                    <input type="password" id="senhaNova" name="senhaNova" minlength="8" required
+                           class="{{#if erro.senhaNova}}is-invalid{{/if}}">
+                    {{#if erro.senhaNova}}<small class="field-error">{{erro.senhaNova}}</small>{{/if}}
+                    <small class="field-hint">Mínimo de 8 caracteres.</small>
+                </div>
+
+                <div class="field">
+                    <label for="senhaNova2">Confirmar nova senha *</label>
+                    <input type="password" id="senhaNova2" name="senhaNova2" minlength="8" required
+                           class="{{#if erro.senhaNova2}}is-invalid{{/if}}">
+                    {{#if erro.senhaNova2}}<small class="field-error">{{erro.senhaNova2}}</small>{{/if}}
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-key"></i> Atualizar senha</button>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>

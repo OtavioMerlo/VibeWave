@@ -9,42 +9,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/vibewave.css">
-    <style>
-        .playlist-hero {
-            display: flex;
-            align-items: flex-end;
-            gap: 28px;
-            padding: 32px;
-            border-radius: var(--radius);
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-            margin-bottom: 34px;
-            color: #fff;
-        }
-        .playlist-hero-cover {
-            width: 160px;
-            height: 160px;
-            border-radius: 16px;
-            overflow: hidden;
-            background: rgba(0, 0, 0, 0.25);
-            display: grid;
-            place-items: center;
-            font-size: 3rem;
-            flex-shrink: 0;
-            box-shadow: var(--shadow);
-        }
-        .playlist-hero-cover img { width: 100%; height: 100%; object-fit: cover; }
-        .playlist-hero span {
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 0.75rem;
-            opacity: 0.85;
-        }
-        .playlist-hero h1 { font-size: clamp(1.8rem, 4vw, 3rem); margin: 6px 0; }
-        .playlist-hero p { opacity: 0.9; }
-        @media (max-width: 620px) {
-            .playlist-hero { flex-direction: column; align-items: center; text-align: center; }
-        }
-    </style>
 </head>
 <body>
     <div class="app-container">
@@ -55,7 +19,8 @@
             <section class="playlist-hero">
                 <div class="playlist-hero-cover">
                     {{#if musicas.[0].capa}}
-                        <img src="/uploads/capamusica/{{musicas.[0].capa}}" alt="{{titulo}}">
+                        <img src="/uploads/capamusica/{{musicas.[0].capa}}" alt="{{titulo}}" loading="lazy"
+                             onerror="this.onerror=null;this.src='/img/default.svg'">
                     {{else}}
                         <i class="fas fa-music"></i>
                     {{/if}}
@@ -67,32 +32,19 @@
                 </div>
             </section>
 
-            <div class="track-list">
+            <div class="track-list" data-fila>
                 {{#each musicas}}
-                <div class="track-item" onclick="location.href='/player/{{this.id}}'">
-                    <div class="track-number">{{inc @index}}</div>
-                    <div class="track-cover">
-                        {{#if this.capa}}
-                            <img src="/uploads/capamusica/{{this.capa}}" alt="{{this.titulo}}">
-                        {{else}}
-                            <div class="cover-placeholder"><i class="fas fa-music"></i></div>
-                        {{/if}}
-                    </div>
-                    <div class="track-info">
-                        <h3>{{this.titulo}}</h3>
-                        <p>{{this.artista.nome}} · {{this.genero}}</p>
-                    </div>
-                    <div class="track-duration">{{formatDuracao this.duracao}}</div>
-                </div>
+                    {{> track-item this}}
                 {{else}}
-                <p style="color: var(--text-muted);">Essa playlist ainda está vazia.</p>
+                    <p class="empty-state">Essa playlist ainda está vazia.</p>
                 {{/each}}
             </div>
         </main>
 
-        {{> player-footer musicaAtual=musicas.[0]}}
+        {{> player-footer}}
     </div>
 
+    <script src="/js/player-core.js"></script>
     <script src="/js/vibewave.js"></script>
 </body>
 </html>

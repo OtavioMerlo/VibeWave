@@ -1,42 +1,51 @@
-<footer class="player-footer">
+<footer class="player-footer" aria-label="Player">
     <div class="now-playing">
-        <div class="now-playing-cover">
-            {{#if musicaAtual}}
-                <img src="/uploads/capamusica/{{musicaAtual.capa}}" alt="{{musicaAtual.titulo}}">
-            {{else}}
-                <div class="cover-placeholder"><i class="fas fa-music"></i></div>
-            {{/if}}
+        <div class="now-playing-cover" data-p-cover>
+            <div class="cover-placeholder"><i class="fas fa-music"></i></div>
         </div>
         <div class="now-playing-info">
-            <h3>{{#if musicaAtual}}{{musicaAtual.titulo}}{{else}}Nada tocando{{/if}}</h3>
-            <p>{{#if musicaAtual}}{{musicaAtual.artista.nome}}{{else}}Escolha uma música para ouvir{{/if}}</p>
+            <h3 data-p-titulo>Nada tocando</h3>
+            <p data-p-artista>Escolha uma música para ouvir</p>
         </div>
-        {{#if musicaAtual}}
-        <button class="like-btn" aria-label="Favoritar"><i class="far fa-heart"></i></button>
-        {{/if}}
+        <span class="equalizer" data-p-equalizer aria-hidden="true">
+            <i></i><i></i><i></i><i></i>
+        </span>
     </div>
 
     <div class="player-controls">
         <div class="control-buttons">
-            <button class="control-btn shuffle" aria-label="Aleatório"><i class="fas fa-random"></i></button>
-            <button class="control-btn prev" aria-label="Anterior"><i class="fas fa-step-backward"></i></button>
-            <button class="control-btn play" id="global-play" aria-label="Play/Pause"><i class="fas fa-play"></i></button>
-            <button class="control-btn next" aria-label="Próxima"><i class="fas fa-step-forward"></i></button>
-            <button class="control-btn repeat" aria-label="Repetir"><i class="fas fa-redo"></i></button>
+            <button type="button" class="control-btn shuffle" data-p-shuffle aria-label="Aleatório">
+                <i class="fas fa-shuffle"></i>
+            </button>
+            <button type="button" class="control-btn prev" data-p-prev aria-label="Anterior">
+                <i class="fas fa-step-backward"></i>
+            </button>
+            <button type="button" class="control-btn play" data-p-play aria-label="Reproduzir">
+                <i class="fas fa-play"></i>
+            </button>
+            <button type="button" class="control-btn next" data-p-next aria-label="Próxima">
+                <i class="fas fa-step-forward"></i>
+            </button>
+            <button type="button" class="control-btn repeat" data-p-repeat aria-label="Repetir">
+                <i class="fas fa-repeat"></i>
+            </button>
         </div>
+
         <div class="progress-container">
-            <span class="time-current">0:00</span>
-            <div class="progress-bar"><div class="progress"></div></div>
-            <span class="time-total">{{#if musicaAtual}}{{formatDuracao musicaAtual.duracao}}{{else}}0:00{{/if}}</span>
+            <span class="time-current" data-p-atual>0:00</span>
+            <div class="progress-bar" data-p-barra>
+                <div class="progress" data-p-progresso></div>
+            </div>
+            <span class="time-total" data-p-total>0:00</span>
         </div>
     </div>
 
     <div class="player-options">
-        <button class="volume-btn" aria-label="Volume"><i class="fas fa-volume-up"></i></button>
-        <div class="volume-slider"><input type="range" min="0" max="100" value="80" aria-label="Volume"></div>
+        <button type="button" class="volume-btn" data-p-mute aria-label="Silenciar">
+            <i class="fas fa-volume-up"></i>
+        </button>
+        <div class="volume-slider">
+            <input type="range" min="0" max="100" value="80" data-p-volume aria-label="Volume">
+        </div>
     </div>
-
-    {{#if musicaAtual}}
-    <audio id="global-audio" src="/uploads/musicas/{{musicaAtual.audio}}" preload="metadata"></audio>
-    {{/if}}
 </footer>

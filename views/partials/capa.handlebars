@@ -1,0 +1,9 @@
+{{#if capa}}
+    <img class="capa-img {{#if classe}}{{classe}}{{/if}}" src="/uploads/capamusica/{{capa}}"
+         alt="Capa de {{alt}}" loading="lazy" decoding="async"
+         onerror="this.onerror=null;this.src='/img/default.svg'">
+{{else}}
+    <div class="capa-img capa-img--vazia {{#if classe}}{{classe}}{{/if}}" role="img" aria-label="{{alt}}">
+        <i class="fas fa-music"></i>
+    </div>
+{{/if}}

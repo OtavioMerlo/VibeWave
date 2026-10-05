@@ -22,7 +22,8 @@ const User = sequelize.define('users', {
     },
     foto: {
         type: DataTypes.STRING,
-        defaultValue: 'default.png'
+        /* Sem avatar => NULL. As views caem em /img/default.svg. */
+        defaultValue: null
     },
     password: {
         type: DataTypes.STRING,

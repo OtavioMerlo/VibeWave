@@ -1,0 +1,29 @@
+<div class="track-item" {{dataTrack this}} role="button" tabindex="0"
+     aria-label="Tocar {{this.titulo}}, por {{#if this.artista}}{{this.artista.nome}}{{else}}artista desconhecido{{/if}}">
+    <button type="button" class="track-number track-play" data-track-play aria-label="Tocar {{this.titulo}}">
+        {{inc @index}}
+    </button>
+
+    <div class="track-cover">
+        {{> capa capa=this.capa alt=this.titulo}}
+        <button type="button" class="track-overlay" data-track-play aria-label="Tocar {{this.titulo}}">
+            <i class="fas fa-play"></i>
+        </button>
+    </div>
+
+    <div class="track-info">
+        <h3>{{this.titulo}}</h3>
+        <p>{{#if this.artista}}{{this.artista.nome}}{{else}}Artista desconhecido{{/if}}{{#if this.genero}} · {{this.genero}}{{/if}}</p>
+    </div>
+
+    <div class="track-duration">{{formatDuracao this.duracao}}</div>
+
+    <div class="track-actions">
+        <button type="button" class="track-btn" aria-label="Favoritar" disabled>
+            <i class="far fa-heart"></i>
+        </button>
+        <a href="/player/{{this.id}}" class="track-btn" title="Abrir página da música" aria-label="Abrir página da música">
+            <i class="fas fa-ellipsis"></i>
+        </a>
+    </div>
+</div>

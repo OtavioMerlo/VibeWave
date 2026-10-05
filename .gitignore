@@ -1,1 +1,15 @@
 node_modules/
+npm-debug.log*
+.DS_Store
+
+# Credenciais e configuracao local
+.env
+.env.*
+
+# Conteudo enviado pelo usuario. Os arquivos ja versionados continuam
+# rastreados; novos uploads nao entram no repositorio.
+public/uploads/musicas/
+public/uploads/artistas/
+public/uploads/capamusica/
+public/uploads/FotoUser/
+!public/uploads/FotoUser/default.png

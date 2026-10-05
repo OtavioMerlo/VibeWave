@@ -30,7 +30,8 @@
 
     {{#if user}}
     <a class="sidebar-user" href="/perfil">
-        <img src="/uploads/FotoUser/{{user.foto}}" alt="{{user.name}}">
+        <img src="{{#if user.foto}}/uploads/FotoUser/{{user.foto}}{{else}}/img/default.svg{{/if}}" alt="{{user.name}}" loading="lazy"
+             onerror="this.onerror=null;this.src='/img/default.svg'">
         <div>
             <strong>{{user.name}}</strong>
             <small>Ver perfil</small>

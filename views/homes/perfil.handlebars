@@ -22,7 +22,8 @@
             </header>
 
             <section class="profile-header">
-                <img src="/uploads/FotoUser/{{user.foto}}" alt="{{user.name}}" class="foto-perfil">
+                <img src="{{#if user.foto}}/uploads/FotoUser/{{user.foto}}{{else}}/img/default.svg{{/if}}" alt="{{user.name}}" class="foto-perfil" loading="lazy"
+                     onerror="this.onerror=null;this.src='/img/default.svg'">
                 <div class="info-usuario">
                     <h1>{{user.name}}</h1>
                     <p><i class="fas fa-envelope"></i> {{user.email}}</p>
@@ -66,7 +67,8 @@
             <div class="modal-content">
                 <button class="fechar" onclick="fecharModal('editar')">&times;</button>
                 <h2>Detalhes do perfil</h2>
-                <img src="/uploads/FotoUser/{{user.foto}}" alt="foto" class="foto" id="fotoPreview" style="width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary);">
+                <img src="{{#if user.foto}}/uploads/FotoUser/{{user.foto}}{{else}}/img/default.svg{{/if}}" alt="foto" class="foto" id="fotoPreview" style="width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary);"
+                     onerror="this.onerror=null;this.src='/img/default.svg'">
                 <div class="field">
                     <label>Nome</label>
                     <input type="text" value="{{user.name}}">
@@ -82,6 +84,7 @@
         {{> player-footer}}
     </div>
 
+    <script src="/js/player-core.js"></script>
     <script src="/js/vibewave.js"></script>
 </body>
 </html>

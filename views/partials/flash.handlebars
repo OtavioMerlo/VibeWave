@@ -1,0 +1,15 @@
+{{#if success_msg}}
+    <div class="alert alert-success" role="status">
+        <i class="fas fa-circle-check"></i>
+        <span>{{success_msg.[0]}}</span>
+        <button type="button" class="alert-close" data-dismiss-alert aria-label="Fechar">&times;</button>
+    </div>
+{{/if}}
+
+{{#if error_msg}}
+    <div class="alert alert-danger" role="alert">
+        <i class="fas fa-circle-exclamation"></i>
+        <span>{{error_msg.[0]}}</span>
+        <button type="button" class="alert-close" data-dismiss-alert aria-label="Fechar">&times;</button>
+    </div>
+{{/if}}

@@ -36,6 +36,8 @@
             </div>
 
             <form class="auth-form active" id="login-form" action="/usuario/login" method="post">
+                <input type="hidden" name="_csrf" value="{{@root.csrfToken}}">
+                <input type="hidden" name="redirect" value="{{redirect}}">
                 <div class="field">
                     <label for="login-email">E-mail</label>
                     <div class="input-group">
@@ -54,6 +56,8 @@
             </form>
 
             <form class="auth-form" id="signup-form" action="/usuario/registro" method="post">
+                <input type="hidden" name="_csrf" value="{{@root.csrfToken}}">
+                <input type="hidden" name="redirect" value="{{redirect}}">
                 <div class="field">
                     <label for="signup-name">Nome</label>
                     <div class="input-group">
@@ -72,14 +76,14 @@
                     <label for="signup-pass">Senha</label>
                     <div class="input-group">
                         <i class="fas fa-lock"></i>
-                        <input id="signup-pass" name="senha" type="password" placeholder="Mínimo 8 caracteres" required>
+                        <input id="signup-pass" name="senha" type="password" placeholder="Mínimo 8 caracteres" minlength="8" autocomplete="new-password" required>
                     </div>
                 </div>
                 <div class="field">
                     <label for="signup-pass2">Confirmar senha</label>
                     <div class="input-group">
                         <i class="fas fa-lock"></i>
-                        <input id="signup-pass2" name="senha2" type="password" placeholder="Repita a senha" required>
+                        <input id="signup-pass2" name="senha2" type="password" placeholder="Repita a senha" minlength="8" autocomplete="new-password" required>
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Criar conta</button>

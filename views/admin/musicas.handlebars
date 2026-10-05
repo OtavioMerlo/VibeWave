@@ -1,0 +1,108 @@
+<div class="page-top">
+    <div>
+        <h1>Músicas</h1>
+        <p>{{paginacao.total}} faixa(s) no catálogo.</p>
+    </div>
+    <div class="page-top-actions">
+        <a href="/admin/musicas/nova" class="btn btn-primary"><i class="fas fa-plus"></i> Nova música</a>
+    </div>
+</div>
+
+<form class="filter-bar" method="get" action="/admin/musicas">
+    <div class="filter-search">
+        <i class="fas fa-magnifying-glass"></i>
+        <input type="search" name="q" value="{{filtros.q}}" placeholder="Buscar por título ou gênero...">
+    </div>
+    <select name="status">
+        <option value="">Todos os status</option>
+        {{#each opcoes.STATUS_MUSICA}}
+        <option value="{{this}}" {{#eq this ../../filtros.status}}selected{{/eq}}>{{this}}</option>
+        {{/each}}
+    </select>
+    <select name="genero">
+        <option value="">Todos os gêneros</option>
+        {{#each opcoes.GENEROS}}
+        <option value="{{this}}" {{#eq this ../../filtros.genero}}selected{{/eq}}>{{this}}</option>
+        {{/each}}
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-filter"></i> Filtrar</button>
+    <a href="/admin/musicas" class="btn btn-ghost btn-sm">Limpar</a>
+</form>
+
+<section class="panel">
+    <div class="panel-body">
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Capa</th>
+                        <th>Título</th>
+                        <th>Artista</th>
+                        <th>Duração</th>
+                        <th>Gênero</th>
+                        <th>Status</th>
+                        <th class="col-acoes">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each musicas}}
+                    <tr>
+                        <td>{{> capa capa=this.capa alt=this.titulo classe="capa-mini"}}</td>
+                        <td>
+                            <strong>{{this.titulo}}</strong>
+                            <div class="cell-sub">
+                                <button type="button" class="link-btn" data-audio-preview="/uploads/musicas/{{this.audio}}">
+                                    <i class="fas fa-circle-play"></i> Ouvir
+                                </button>
+                            </div>
+                        </td>
+                        <td>
+                            {{#if this.artista}}
+                                {{this.artista.nome}}
+                            {{else}}
+                                <span class="text-dim">Sem artista</span>
+                            {{/if}}
+                        </td>
+                        <td>{{formatDuracao this.duracao}}</td>
+                        <td>{{this.genero}}</td>
+                        <td>
+                            <span class="badge {{#eq this.status 'Ativa'}}badge-green{{/eq}}{{#eq this.status 'Pendente'}}badge-yellow{{/eq}}{{#eq this.status 'Inativa'}}badge-gray{{/eq}}">{{this.status}}</span>
+                        </td>
+                        <td class="col-acoes">
+                            <div class="actions-cell">
+                                <a href="/admin/musicas/{{this.id}}/editar" class="btn btn-ghost btn-sm" title="Editar" aria-label="Editar">
+                                    <i class="fas fa-pen"></i>
+                                </a>
+                                {{> excluir
+                                    action=(concat '/admin/musicas/' this.id '/excluir')
+                                    confirmacao=(concat 'Excluir a música "' this.titulo '"? O arquivo de áudio e a capa serão apagados do servidor. Esta ação não pode ser desfeita.')
+                                    rotulo="Excluir"}}
+                            </div>
+                        </td>
+                    </tr>
+                    {{else}}
+                    <tr><td colspan="7" class="empty-row">Nenhuma música encontrada com esses filtros.</td></tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+{{#if paginacao.temMaisPaginas}}
+<nav class="pager">
+    {{#if paginacao.temAnterior}}
+        <a href="/admin/musicas{{queryAnterior}}" class="btn btn-ghost btn-sm"><i class="fas fa-chevron-left"></i> Anterior</a>
+    {{/if}}
+    <span>Página {{paginacao.pagina}} de {{paginacao.paginas}}</span>
+    {{#if paginacao.temProxima}}
+        <a href="/admin/musicas{{queryProxima}}" class="btn btn-ghost btn-sm">Próxima <i class="fas fa-chevron-right"></i></a>
+    {{/if}}
+</nav>
+{{/if}}
+
+<dialog class="preview-dialog" id="previewDialog">
+    <button type="button" class="close-x" data-close-dialog aria-label="Fechar">&times;</button>
+    <h3>Prévia rápida</h3>
+    <audio id="previewAudio" controls preload="metadata"></audio>
+</dialog>

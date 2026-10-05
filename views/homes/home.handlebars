@@ -23,62 +23,38 @@
                         Bom te ver, {{#if user}}{{user.name}}{{else}}ouvinte{{/if}}!
                     </p>
                 </div>
-                <div class="theme-toggle" role="button" aria-label="Alternar tema">
+                <div class="theme-toggle" role="button" aria-label="Alternar tema" tabindex="0">
                     <i class="fas fa-moon"></i>
                 </div>
             </header>
 
-            <section class="featured-playlists">
+            <section class="featured-playlists" data-fila>
                 <h2>Em destaque</h2>
                 <div class="playlist-grid">
                     {{#each musicas}}
-                    <a href="/player/{{this.id}}" class="playlist-card">
-                        <div class="playlist-cover">
-                            {{#if this.capa}}
-                                <img src="/uploads/capamusica/{{this.capa}}" alt="{{this.titulo}}">
-                            {{else}}
-                                <div class="cover-placeholder"><i class="fas fa-music"></i></div>
-                            {{/if}}
-                            <div class="play-button"><i class="fas fa-play"></i></div>
-                        </div>
-                        <h3>{{this.titulo}}</h3>
-                        <p>{{this.artista.nome}}</p>
-                    </a>
+                        {{> track-card this}}
                     {{else}}
-                    <p style="color: var(--text-muted);">Nenhuma música cadastrada ainda.</p>
+                        <p class="empty-state">Nenhuma música cadastrada ainda. <a href="/admin/musicas/nova">Cadastre a primeira</a>.</p>
                     {{/each}}
                 </div>
             </section>
 
-            <section class="recently-played">
+            <section class="recently-played" data-fila>
                 <h2>Tocadas recentemente</h2>
                 <div class="track-list">
                     {{#each musicas}}
-                    <div class="track-item" onclick="location.href='/player/{{this.id}}'">
-                        <div class="track-number">{{inc @index}}</div>
-                        <div class="track-cover">
-                            {{#if this.capa}}
-                                <img src="/uploads/capamusica/{{this.capa}}" alt="{{this.titulo}}">
-                            {{else}}
-                                <div class="cover-placeholder"><i class="fas fa-music"></i></div>
-                            {{/if}}
-                        </div>
-                        <div class="track-info">
-                            <h3>{{this.titulo}}</h3>
-                            <p>{{this.artista.nome}} · {{this.genero}}</p>
-                        </div>
-                        <div class="track-duration">{{formatDuracao this.duracao}}</div>
-                    </div>
+                        {{> track-item this}}
                     {{else}}
-                    <p style="color: var(--text-muted);">Seu histórico aparecerá aqui.</p>
+                        <p class="empty-state">Seu histórico aparecerá aqui.</p>
                     {{/each}}
                 </div>
             </section>
         </main>
 
-        {{> player-footer musicaAtual=musicas.[0]}}
+        {{> player-footer}}
     </div>
 
+    <script src="/js/player-core.js"></script>
     <script src="/js/vibewave.js"></script>
 </body>
 </html>

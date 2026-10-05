@@ -37,7 +37,8 @@ const Artista = sequelize.define('artists', {
 
     foto: {
         type: DataTypes.STRING,
-        defaultValue: 'default.png'
+        /* Sem foto => NULL. As views caem em /img/default.svg. */
+        defaultValue: null
     },
 
     website: {

@@ -13,60 +13,70 @@
 <body>
     <div class="app-container">
         {{> mobile-nav}}
-        {{> sidebar active="player"}}
-
-        <audio id="bgAudio" preload="metadata">
-            <source src="/uploads/musicas/{{musica.audio}}" type="audio/mpeg">
-        </audio>
+        {{> sidebar active="library"}}
 
         <main class="main-content player-main">
             <section class="player-section">
                 <div class="album-art-container">
                     <div class="album-art">
                         {{#if musica.capa}}
-                            <img src="/uploads/capamusica/{{musica.capa}}" alt="Capa de {{musica.titulo}}" id="album-art">
+                            <img src="/uploads/capamusica/{{musica.capa}}" alt="Capa de {{musica.titulo}}" id="album-art"
+                                 onerror="this.onerror=null;this.src='/img/default.svg'">
                         {{else}}
                             <div class="cover-placeholder" id="album-art"><i class="fas fa-music" style="font-size:3rem;"></i></div>
                         {{/if}}
                         <div class="vinyl"></div>
                     </div>
-                    <canvas id="waveform"></canvas>
                 </div>
 
                 <div class="player-info">
-                    <span style="color: var(--primary-light); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px;">Tocando agora</span>
-                    <h1 id="song-title">{{musica.titulo}}</h1>
-                    <h2 id="song-artist">{{musica.artista.nome}}</h2>
+                    <span class="player-kicker">Tocando agora</span>
+                    <h1 id="song-title" data-p-titulo>{{musica.titulo}}</h1>
+                    <h2 id="song-artist" data-p-artista>{{#if musica.artista}}{{musica.artista.nome}}{{else}}Artista desconhecido{{/if}}</h2>
 
                     <div class="song-progress">
-                        <div class="progress-container" id="progress-container">
-                            <span class="time-current" id="current-time">0:00</span>
-                            <div class="progress-bar">
-                                <div class="progress" id="song-progress"></div>
+                        <div class="progress-container">
+                            <span class="time-current" data-p-atual>0:00</span>
+                            <div class="progress-bar" data-p-barra>
+                                <div class="progress" data-p-progresso></div>
                             </div>
-                            <span class="time-total" id="duration">{{tempo}}</span>
+                            <span class="time-total" data-p-total>{{tempo}}</span>
                         </div>
                     </div>
 
                     <div class="player-buttons">
-                        <button class="player-btn shuffle" aria-label="Aleatório"><i class="fas fa-random"></i></button>
-                        <button class="player-btn prev" aria-label="Anterior"><i class="fas fa-step-backward"></i></button>
-                        <button class="player-btn play" id="play-btn" aria-label="Play/Pause"><i class="fas fa-play"></i></button>
-                        <button class="player-btn next" aria-label="Próxima"><i class="fas fa-step-forward"></i></button>
-                        <button class="player-btn repeat" aria-label="Repetir"><i class="fas fa-redo"></i></button>
+                        <button type="button" class="player-btn shuffle" data-p-shuffle aria-label="Aleatório"><i class="fas fa-shuffle"></i></button>
+                        <button type="button" class="player-btn prev" data-p-prev aria-label="Anterior"><i class="fas fa-step-backward"></i></button>
+                        <button type="button" class="player-btn play" data-p-play aria-label="Play/Pause"><i class="fas fa-play"></i></button>
+                        <button type="button" class="player-btn next" data-p-next aria-label="Próxima"><i class="fas fa-step-forward"></i></button>
+                        <button type="button" class="player-btn repeat" data-p-repeat aria-label="Repetir"><i class="fas fa-repeat"></i></button>
                     </div>
 
                     <div class="player-options">
-                        <button class="option-btn like" aria-label="Favoritar"><i class="far fa-heart"></i></button>
-                        <button class="option-btn add-to-playlist" aria-label="Adicionar"><i class="fas fa-plus"></i></button>
-                        <button class="option-btn share" aria-label="Compartilhar"><i class="fas fa-share-alt"></i></button>
+                        <button type="button" class="option-btn volume-btn" data-p-mute aria-label="Silenciar"><i class="fas fa-volume-up"></i></button>
+                        <input type="range" min="0" max="100" value="80" data-p-volume aria-label="Volume">
+                        <span class="volume-valor" data-p-volume-valor>80%</span>
+                        <button type="button" class="option-btn like" aria-label="Favoritar" disabled><i class="far fa-heart"></i></button>
+                        <button type="button" class="option-btn share" aria-label="Compartilhar" disabled><i class="fas fa-share-alt"></i></button>
                     </div>
+
+                    <button type="button" class="btn btn-primary btn-play-page" data-play-page
+                            data-track-id="{{musica.id}}"
+                            data-track-src="/uploads/musicas/{{musica.audio}}"
+                            data-track-capa="{{#if musica.capa}}/uploads/capamusica/{{musica.capa}}{{else}}/img/default.svg{{/if}}"
+                            data-track-titulo="{{musica.titulo}}"
+                            data-track-artista="{{#if musica.artista}}{{musica.artista.nome}}{{else}}Artista desconhecido{{/if}}"
+                            data-track-duracao="{{musica.duracao}}">
+                        <i class="fas fa-play"></i> Tocar no player principal
+                    </button>
                 </div>
             </section>
         </main>
+
+        {{> player-footer}}
     </div>
 
-    <script src="/js/player.js"></script>
+    <script src="/js/player-core.js"></script>
     <script src="/js/vibewave.js"></script>
 </body>
 </html>

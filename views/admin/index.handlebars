@@ -1,421 +1,94 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vibewave | Painel Admin</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/admin.css">
-</head>
-<body>
-    <div class="admin-layout">
-        <aside class="admin-sidebar">
-            <div class="admin-logo">
-                <i class="fas fa-wave-square" style="color:#a78bfa"></i>
-                Vibewave <span class="badge-admin">ADMIN</span>
-            </div>
-
-            <nav class="admin-menu">
-                <a href="/admin" class="active"><i class="fas fa-gauge-high"></i> Dashboard</a>
-                <a href="#musicas"><i class="fas fa-music"></i> Músicas</a>
-                <a href="#artistas"><i class="fas fa-user"></i> Artistas</a>
-                <a href="#usuarios"><i class="fas fa-users"></i> Usuários</a>
-                <a href="/home"><i class="fas fa-headphones"></i> Ir para o app</a>
-            </nav>
-
-            <a href="/usuario/logout" class="admin-logout">
-                <i class="fas fa-right-from-bracket"></i> Sair
-            </a>
-        </aside>
-
-        <main class="admin-main">
-            <div class="admin-topbar">
-                <div>
-                    <h1>Painel de controle</h1>
-                    <p>Bem-vindo de volta{{#if user.nome}}, {{user.nome}}{{/if}}! Gerencie o catálogo do Vibewave.</p>
-                </div>
-                <button class="btn btn-primary" data-open="addMusicModal">
-                    <i class="fas fa-plus"></i> Nova música
-                </button>
-            </div>
-
-            <section class="stat-grid">
-                <div class="stat-card">
-                    <div>
-                        <h4>Músicas</h4>
-                        <div class="value">{{totalMusicas}}</div>
-                    </div>
-                    <div class="stat-icon"><i class="fas fa-music"></i></div>
-                </div>
-                <div class="stat-card">
-                    <div>
-                        <h4>Artistas</h4>
-                        <div class="value">{{totalArtistas}}</div>
-                    </div>
-                    <div class="stat-icon"><i class="fas fa-user"></i></div>
-                </div>
-                <div class="stat-card">
-                    <div>
-                        <h4>Usuários</h4>
-                        <div class="value">{{totalUsuarios}}</div>
-                    </div>
-                    <div class="stat-icon"><i class="fas fa-users"></i></div>
-                </div>
-                <div class="stat-card">
-                    <div>
-                        <h4>Downloads</h4>
-                        <div class="value">—</div>
-                    </div>
-                    <div class="stat-icon"><i class="fas fa-download"></i></div>
-                </div>
-            </section>
-
-            <section class="panel" id="musicas">
-                <div class="panel-head">
-                    <h2><i class="fas fa-music"></i> Músicas</h2>
-                    <button class="btn btn-primary btn-sm" data-open="addMusicModal">
-                        <i class="fas fa-plus"></i> Adicionar
-                    </button>
-                </div>
-                <div class="panel-body">
-                    <div class="table-wrap">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Título</th>
-                                    <th>Artista</th>
-                                    <th>Duração</th>
-                                    <th>Gênero</th>
-                                    <th>Status</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{#each musicas}}
-                                <tr>
-                                    <td>#{{id}}</td>
-                                    <td>{{titulo}}</td>
-                                    <td>{{this.artista.nome}}</td>
-                                    <td>{{duracao}}s</td>
-                                    <td>{{genero}}</td>
-                                    <td><span class="badge badge-green">{{status}}</span></td>
-                                    <td>
-                                        <div class="actions-cell">
-                                            <a href="/admin/music/img/{{id}}" class="btn btn-ghost btn-sm" title="Adicionar capa"><i class="fas fa-image"></i></a>
-                                            <a href="/admin/musica/edit/{{id}}" class="btn btn-ghost btn-sm" title="Editar"><i class="fas fa-pen"></i></a>
-                                            <form action="/admin/musica/delete/{{id}}" method="post">
-                                                <button type="submit" class="btn btn-danger btn-sm" title="Excluir"><i class="fas fa-trash"></i></button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {{else}}
-                                <tr><td colspan="7" class="empty-row">Nenhuma música cadastrada.</td></tr>
-                                {{/each}}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <section class="panel" id="artistas">
-                <div class="panel-head">
-                    <h2><i class="fas fa-user"></i> Artistas</h2>
-                    <button class="btn btn-primary btn-sm" data-open="addArtistModal">
-                        <i class="fas fa-plus"></i> Adicionar
-                    </button>
-                </div>
-                <div class="panel-body">
-                    <div class="table-wrap">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Nome</th>
-                                    <th>Gênero</th>
-                                    <th>País</th>
-                                    <th>Status</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{#each artistas}}
-                                <tr>
-                                    <td>#{{id}}</td>
-                                    <td>
-                                        <div class="cell-user">
-                                            <img src="/uploads/artistas/{{foto}}" alt="{{nome}}" onerror="this.src='/img/default.svg'">
-                                            {{nome}}
-                                        </div>
-                                    </td>
-                                    <td>{{genero_musical}}</td>
-                                    <td>{{pais}}</td>
-                                    <td><span class="badge badge-green">{{status}}</span></td>
-                                    <td>
-                                        <div class="actions-cell">
-                                            <a href="/admin/artista/edit/{{id}}" class="btn btn-ghost btn-sm" title="Editar"><i class="fas fa-pen"></i></a>
-                                            <form action="/admin/artista/delete/{{id}}" method="post">
-                                                <button type="submit" class="btn btn-danger btn-sm" title="Excluir"><i class="fas fa-trash"></i></button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {{else}}
-                                <tr><td colspan="6" class="empty-row">Nenhum artista cadastrado.</td></tr>
-                                {{/each}}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <section class="panel" id="usuarios">
-                <div class="panel-head">
-                    <h2><i class="fas fa-users"></i> Usuários</h2>
-                </div>
-                <div class="panel-body">
-                    <div class="table-wrap">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Nome</th>
-                                    <th>E-mail</th>
-                                    <th>Admin</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{#each usuarios}}
-                                <tr>
-                                    <td>#{{id}}</td>
-                                    <td>
-                                        <div class="cell-user">
-                                            <img src="/uploads/FotoUser/{{foto}}" alt="{{name}}" onerror="this.src='/img/default.svg'">
-                                            {{name}}
-                                        </div>
-                                    </td>
-                                    <td>{{email}}</td>
-                                    <td>
-                                        {{#if isAdmin}}
-                                        <span class="badge badge-green">Sim</span>
-                                        {{else}}
-                                        <span class="badge badge-gray">Não</span>
-                                        {{/if}}
-                                    </td>
-                                </tr>
-                                {{else}}
-                                <tr><td colspan="4" class="empty-row">Nenhum usuário cadastrado.</td></tr>
-                                {{/each}}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-        </main>
+<div class="page-top">
+    <div>
+        <h1>Painel de controle</h1>
+        <p>Bem-vindo de volta{{#if user.name}}, {{user.name}}{{/if}}! Gerencie o catálogo do Vibewave.</p>
     </div>
+    <div class="page-top-actions">
+        <a href="/admin/musicas/nova" class="btn btn-primary"><i class="fas fa-plus"></i> Nova música</a>
+        <a href="/admin/artistas/nova" class="btn btn-ghost"><i class="fas fa-user-plus"></i> Novo artista</a>
+    </div>
+</div>
 
-    <!-- Modal Adicionar Música -->
-    <div class="modal" id="addMusicModal">
-        <div class="modal-box">
-            <header>
-                <h2><i class="fas fa-music"></i> Adicionar nova música</h2>
-                <button class="close-x" data-close>&times;</button>
-            </header>
-            <form method="post" action="/admin/musicas/nova" enctype="multipart/form-data">
-                <div class="modal-body">
-                    <div class="form-grid">
-                        <div class="field">
-                            <label for="musicTitle">Título da música</label>
-                            <input name="titulomusica" type="text" id="musicTitle" placeholder="Digite o título" required>
-                        </div>
-                        <div class="field">
-                            <label for="musicArtist">Artista</label>
-                            <select name="musicaartista" id="musicArtist" required>
-                                <option value="" selected disabled>Selecione um artista</option>
-                                {{#each artistas}}
-                                <option value="{{id}}">{{nome}}</option>
-                                {{/each}}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-grid">
-                        <div class="field">
-                            <label for="musicGenre">Gênero</label>
-                            <select name="musicagenero" id="musicGenre" required>
-                                <option value="" selected disabled>Selecione um gênero</option>
-                                <option value="Pop">Pop</option>
-                                <option value="Rock">Rock</option>
-                                <option value="Rap">Rap</option>
-                                <option value="Hip Hop">Hip Hop</option>
-                                <option value="Eletrônica">Eletrônica</option>
-                                <option value="R&B">R&B</option>
-                                <option value="Jazz">Jazz</option>
-                                <option value="Clássica">Clássica</option>
-                                <option value="Country">Country</option>
-                                <option value="Reggae">Reggae</option>
-                                <option value="Sertanejo">Sertanejo</option>
-                                <option value="Funk">Funk</option>
-                                <option value="Outro">Outro</option>
-                            </select>
-                        </div>
-                        <div class="field">
-                            <label for="musicStatus">Status</label>
-                            <select name="musicastatus" id="musicStatus">
-                                <option value="Ativa" selected>Ativa</option>
-                                <option value="Pendente">Pendente</option>
-                                <option value="Inativa">Inativa</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-grid">
-                        <div class="field">
-                            <label for="musicReleaseDate">Data de lançamento</label>
-                            <input name="musicadate" type="date" id="musicReleaseDate">
-                        </div>
-                        <div class="field">
-                            <label for="musicFile">Arquivo de áudio</label>
-                            <input name="musicaaudio" type="file" id="musicFile" accept="audio/*" required>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label for="musicLyrics">Letra (opcional)</label>
-                        <textarea name="musicaletra" id="musicLyrics" placeholder="Digite a letra da música..."></textarea>
-                    </div>
-                </div>
-                <footer>
-                    <button type="button" class="btn btn-ghost" data-close>Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Salvar música</button>
-                </footer>
-            </form>
+<section class="stat-grid">
+    <a href="/admin/musicas" class="stat-card stat-card--link">
+        <div>
+            <h4>Músicas</h4>
+            <div class="value">{{totalMusicas}}</div>
+            <small>{{musicasPendentes}} pendente(s)</small>
         </div>
-    </div>
-
-    <!-- Modal Adicionar Artista -->
-    <div class="modal" id="addArtistModal">
-        <div class="modal-box">
-            <header>
-                <h2><i class="fas fa-user-plus"></i> Adicionar novo artista</h2>
-                <button class="close-x" data-close>&times;</button>
-            </header>
-            <form method="post" action="/admin/artista/novo" enctype="multipart/form-data">
-                <div class="modal-body">
-                    <div class="form-grid">
-                        <div class="field">
-                            <label for="name">Nome do artista *</label>
-                            <input name="nome" type="text" id="name" placeholder="Nome completo" required>
-                        </div>
-                        <div class="field">
-                            <label for="country">País de origem *</label>
-                            <select name="country" id="country" required>
-                                <option value="" selected disabled>Selecione um país</option>
-                                <option value="Brasil">Brasil</option>
-                                <option value="Estados Unidos">Estados Unidos</option>
-                                <option value="Reino Unido">Reino Unido</option>
-                                <option value="Canadá">Canadá</option>
-                                <option value="Alemanha">Alemanha</option>
-                                <option value="França">França</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-grid">
-                        <div class="field">
-                            <label for="mainGenre">Gênero principal *</label>
-                            <select name="mainGenre" id="mainGenre" required>
-                                <option value="" selected disabled>Selecione um gênero</option>
-                                <option value="Pop">Pop</option>
-                                <option value="Rock">Rock</option>
-                                <option value="Rap">Rap</option>
-                                <option value="Hip Hop">Hip Hop</option>
-                                <option value="Eletrônica">Eletrônica</option>
-                                <option value="R&B">R&B</option>
-                                <option value="Jazz">Jazz</option>
-                                <option value="Clássica">Clássica</option>
-                                <option value="Country">Country</option>
-                                <option value="Reggae">Reggae</option>
-                                <option value="Sertanejo">Sertanejo</option>
-                                <option value="Funk">Funk</option>
-                                <option value="Outro">Outro</option>
-                            </select>
-                        </div>
-                        <div class="field">
-                            <label for="status">Status *</label>
-                            <select name="status" id="status" required>
-                                <option value="Ativo" selected>Ativo</option>
-                                <option value="Inativo">Inativo</option>
-                                <option value="Pausa">Em Pausa</option>
-                                <option value="Falecido">Falecido</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label for="biography">Biografia</label>
-                        <textarea name="biography" id="biography" placeholder="Descreva a carreira do artista..." required></textarea>
-                    </div>
-                    <div class="form-grid">
-                        <div class="field">
-                            <label for="photoUrl">Foto do artista</label>
-                            <input name="file" type="file" id="photoUrl" accept="image/*">
-                        </div>
-                        <div class="field">
-                            <label for="website">Website</label>
-                            <input name="website" type="url" id="website" placeholder="https://www.exemplo.com">
-                        </div>
-                    </div>
-                    <div class="form-grid">
-                        <div class="field">
-                            <label for="birthDate">Data de nascimento/fundação</label>
-                            <input name="birthDate" type="date" id="birthDate" required>
-                        </div>
-                        <div class="field">
-                            <label>Rede social principal</label>
-                            <div class="form-grid">
-                                <select name="mainSocialMedia[platform]">
-                                    <option value="Instagram">Instagram</option>
-                                    <option value="Twitter">Twitter</option>
-                                    <option value="Facebook">Facebook</option>
-                                    <option value="YouTube">YouTube</option>
-                                    <option value="TikTok">TikTok</option>
-                                    <option value="Outro">Outro</option>
-                                </select>
-                                <input name="mainSocialMedia[handle]" type="text" placeholder="@usuário">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <footer>
-                    <button type="reset" class="btn btn-ghost">Limpar</button>
-                    <button type="submit" class="btn btn-primary">Cadastrar artista</button>
-                </footer>
-            </form>
+        <div class="stat-icon"><i class="fas fa-music"></i></div>
+    </a>
+    <a href="/admin/artistas" class="stat-card stat-card--link">
+        <div>
+            <h4>Artistas</h4>
+            <div class="value">{{totalArtistas}}</div>
+            <small>{{artistasInativos}} inativo(s)</small>
         </div>
-    </div>
+        <div class="stat-icon"><i class="fas fa-user"></i></div>
+    </a>
+    <a href="/admin/usuarios" class="stat-card stat-card--link">
+        <div>
+            <h4>Usuários</h4>
+            <div class="value">{{totalUsuarios}}</div>
+            <small>cadastrados</small>
+        </div>
+        <div class="stat-icon"><i class="fas fa-users"></i></div>
+    </a>
+    <a href="/admin/perfil" class="stat-card stat-card--link">
+        <div>
+            <h4>Meu acesso</h4>
+            <div class="value" style="font-size:1.15rem;word-break:break-word">{{user.email}}</div>
+            <small>trocar senha</small>
+        </div>
+        <div class="stat-icon"><i class="fas fa-user-shield"></i></div>
+    </a>
+</section>
 
-    <script>
-        document.querySelectorAll('[data-open]').forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                var m = document.getElementById(btn.getAttribute('data-open'));
-                if (m) m.classList.add('open');
-            });
-        });
+<div class="grid-2">
+    <section class="panel">
+        <div class="panel-head">
+            <h2><i class="fas fa-clock-rotate-left"></i> Últimas músicas</h2>
+            <a href="/admin/musicas" class="btn btn-ghost btn-sm">Ver todas</a>
+        </div>
+        <div class="panel-body">
+            <div class="mini-list">
+                {{#each ultimasMusicas}}
+                <div class="mini-item">
+                    {{> capa capa=this.capa alt=this.titulo classe="mini-cover"}}
+                    <div class="mini-info">
+                        <strong>{{this.titulo}}</strong>
+                        <small>{{#if this.artista}}{{this.artista.nome}}{{else}}Sem artista{{/if}} · {{formatDuracao this.duracao}}</small>
+                    </div>
+                    <span class="badge {{#eq this.status 'Ativa'}}badge-green{{/eq}}{{#eq this.status 'Pendente'}}badge-yellow{{/eq}}{{#eq this.status 'Inativa'}}badge-gray{{/eq}}">{{this.status}}</span>
+                </div>
+                {{else}}
+                <p class="empty-row">Nenhuma música cadastrada.</p>
+                {{/each}}
+            </div>
+        </div>
+    </section>
 
-        document.querySelectorAll('.modal').forEach(function (modal) {
-            modal.addEventListener('click', function (e) {
-                if (e.target === modal) modal.classList.remove('open');
-            });
-            modal.querySelectorAll('[data-close]').forEach(function (btn) {
-                btn.addEventListener('click', function () { modal.classList.remove('open'); });
-            });
-        });
-
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') {
-                document.querySelectorAll('.modal.open').forEach(function (m) { m.classList.remove('open'); });
-            }
-        });
-    </script>
-</body>
-</html>
+    <section class="panel">
+        <div class="panel-head">
+            <h2><i class="fas fa-user-plus"></i> Últimos artistas</h2>
+            <a href="/admin/artistas" class="btn btn-ghost btn-sm">Ver todos</a>
+        </div>
+        <div class="panel-body">
+            <div class="mini-list">
+                {{#each ultimosArtistas}}
+                <div class="mini-item">
+                    <img class="mini-avatar" src="{{#if this.foto}}/uploads/artistas/{{this.foto}}{{else}}/img/default.svg{{/if}}" alt="{{this.nome}}" loading="lazy"
+                         onerror="this.onerror=null;this.src='/img/default.svg'">
+                    <div class="mini-info">
+                        <strong>{{this.nome}}</strong>
+                        <small>{{this.genero_musical}} · {{this.pais}}</small>
+                    </div>
+                    <span class="badge {{#eq this.status 'Ativo'}}badge-green{{/eq}}{{#eq this.status 'Inativo'}}badge-gray{{/eq}}{{#eq this.status 'Pausa'}}badge-yellow{{/eq}}">{{this.status}}</span>
+                </div>
+                {{else}}
+                <p class="empty-row">Nenhum artista cadastrado.</p>
+                {{/each}}
+            </div>
+        </div>
+    </section>
+</div>

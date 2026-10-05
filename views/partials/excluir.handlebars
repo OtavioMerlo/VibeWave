@@ -1,0 +1,11 @@
+<form action="{{action}}" method="post" class="inline-form"
+      data-confirm="{{confirmacao}}"
+      data-confirm-titulo="{{#if confirmarTitulo}}{{confirmarTitulo}}{{else}}Confirmar exclusão{{/if}}">
+    <input type="hidden" name="_csrf" value="{{@root.csrfToken}}">
+    {{#if extras}}
+        <input type="hidden" name="forcar" value="sim">
+    {{/if}}
+    <button type="submit" class="btn btn-danger btn-sm" title="{{rotulo}}" aria-label="{{rotulo}}">
+        <i class="fas fa-trash"></i>
+    </button>
+</form>

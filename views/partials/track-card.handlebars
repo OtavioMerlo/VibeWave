@@ -1,0 +1,12 @@
+<a href="/player/{{this.id}}" class="playlist-card" {{dataTrack this}} role="button"
+   aria-label="Tocar {{this.titulo}}, por {{#if this.artista}}{{this.artista.nome}}{{else}}artista desconhecido{{/if}}">
+    <div class="playlist-cover">
+        {{> capa capa=this.capa alt=this.titulo}}
+        <button type="button" class="play-button" data-track-play aria-label="Tocar {{this.titulo}}">
+            <i class="fas fa-play"></i>
+        </button>
+        <span class="equalizer equalizer--card" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    </div>
+    <h3>{{this.titulo}}</h3>
+    <p>{{#if this.artista}}{{this.artista.nome}}{{else}}Artista desconhecido{{/if}}</p>
+</a>

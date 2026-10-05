@@ -1,0 +1,206 @@
+{{#if erro}}
+<div class="alert alert-danger">
+    <i class="fas fa-circle-exclamation"></i>
+    <span>Não foi possível salvar. Revise os campos destacados abaixo.</span>
+</div>
+{{/if}}
+
+<div class="page-top">
+    <div>
+        <h1><i class="fas {{#if artista}}fa-user-pen{{else}}fa-user-plus{{/if}}"></i> {{#if artista}}Editar artista{{else}}Novo artista{{/if}}</h1>
+        <p>{{#if artista}}Atualizando os dados de <strong>{{artista.nome}}</strong>.{{else}}Preencha os dados para adicionar um artista ao catálogo.{{/if}}</p>
+    </div>
+    <div class="page-top-actions">
+        <a href="/admin/artistas" class="btn btn-ghost btn-sm"><i class="fas fa-arrow-left"></i> Voltar</a>
+    </div>
+</div>
+
+{{#if artista}}{{#with artista}}
+<form method="post" action="/admin/artistas/{{id}}" enctype="multipart/form-data" class="admin-form">
+    <input type="hidden" name="_csrf" value="{{@root.csrfToken}}">
+
+    <div class="grid-2">
+        <div class="field">
+            <label for="nome">Nome do artista *</label>
+            <input type="text" id="nome" name="nome" required maxlength="120" value="{{nome}}"
+                   class="{{#if ../erro.nome}}is-invalid{{/if}}">
+            {{#if ../erro.nome}}<small class="field-error">{{../erro.nome}}</small>{{/if}}
+        </div>
+        <div class="field">
+            <label for="pais">País de origem *</label>
+            <input type="text" id="pais" name="pais" required list="lista-paises" value="{{pais}}"
+                   class="{{#if ../erro.pais}}is-invalid{{/if}}">
+            <datalist id="lista-paises">
+                {{#each ../opcoes.PAISES}}<option value="{{this}}"></option>{{/each}}
+            </datalist>
+            {{#if ../erro.pais}}<small class="field-error">{{../erro.pais}}</small>{{/if}}
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="field">
+            <label for="genero_musical">Gênero musical *</label>
+            <select id="genero_musical" name="genero_musical" required class="{{#if ../erro.genero_musical}}is-invalid{{/if}}">
+                {{#each ../opcoes.GENEROS}}
+                <option value="{{this}}" {{#eq this ../genero_musical}}selected{{/eq}}>{{this}}</option>
+                {{/each}}
+            </select>
+            {{#if ../erro.genero_musical}}<small class="field-error">{{../erro.genero_musical}}</small>{{/if}}
+        </div>
+        <div class="field">
+            <label for="status">Status *</label>
+            <select id="status" name="status" required>
+                {{#each ../opcoes.STATUS_ARTISTA}}
+                <option value="{{this}}" {{#eq this ../status}}selected{{/eq}}>{{this}}</option>
+                {{/each}}
+            </select>
+        </div>
+    </div>
+
+    <div class="field">
+        <label for="biografia">Biografia</label>
+        <textarea id="biografia" name="biografia" rows="6" placeholder="Descreva a carreira do artista...">{{biografia}}</textarea>
+    </div>
+
+    <div class="grid-2">
+        <div class="field">
+            <label for="website">Website</label>
+            <input type="url" id="website" name="website" placeholder="https://exemplo.com" value="{{website}}"
+                   class="{{#if ../erro.website}}is-invalid{{/if}}">
+            {{#if ../erro.website}}<small class="field-error">{{../erro.website}}</small>{{/if}}
+        </div>
+        <div class="field">
+            <label for="datanas">Data de nascimento / fundação</label>
+            <input type="date" id="datanas" name="datanas" value="{{datanas}}">
+            {{#if ../erro.datanas}}<small class="field-error">{{../erro.datanas}}</small>{{/if}}
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="field">
+            <label for="plataforma">Plataforma principal</label>
+            <select id="plataforma" name="plataforma">
+                <option value="">Nenhuma</option>
+                {{#each ../opcoes.PLATAFORMAS}}
+                <option value="{{this}}" {{#eq this ../plataforma}}selected{{/eq}}>{{this}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="field">
+            <label for="handle">Handle / usuário</label>
+            <input type="text" id="handle" name="handle" placeholder="@usuario" value="{{handle}}">
+        </div>
+    </div>
+
+    <div class="field">
+        <label>Foto do artista</label>
+        <div class="photo-row">
+            <img id="fotoPreview" class="photo-preview" src="{{#if foto}}/uploads/artistas/{{foto}}{{else}}/img/default.svg{{/if}}" alt="{{nome}}" loading="lazy"
+                 onerror="this.onerror=null;this.src='/img/default.svg'">
+            <div class="photo-actions">
+                <label class="btn btn-ghost btn-sm upload-trigger">
+                    <i class="fas fa-camera"></i> Trocar foto
+                    <input type="file" name="foto" accept="image/jpeg,image/png,image/webp" data-preview="fotoPreview" hidden>
+                </label>
+                <small class="field-hint">JPG, PNG ou WEBP · até 5 MB</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <a href="/admin/artistas" class="btn btn-ghost">Cancelar</a>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-floppy-disk"></i> Salvar alterações</button>
+    </div>
+</form>
+{{/with}}
+{{else}}
+<form method="post" action="/admin/artistas" enctype="multipart/form-data" class="admin-form">
+    <input type="hidden" name="_csrf" value="{{@root.csrfToken}}">
+
+    <div class="grid-2">
+        <div class="field">
+            <label for="nome">Nome do artista *</label>
+            <input type="text" id="nome" name="nome" required maxlength="120" placeholder="Nome completo">
+            {{#if erro.nome}}<small class="field-error">{{erro.nome}}</small>{{/if}}
+        </div>
+        <div class="field">
+            <label for="pais">País de origem *</label>
+            <input type="text" id="pais" name="pais" required list="lista-paises" placeholder="Selecione ou digite">
+            <datalist id="lista-paises">
+                {{#each opcoes.PAISES}}<option value="{{this}}"></option>{{/each}}
+            </datalist>
+            {{#if erro.pais}}<small class="field-error">{{erro.pais}}</small>{{/if}}
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="field">
+            <label for="genero_musical">Gênero musical *</label>
+            <select id="genero_musical" name="genero_musical" required>
+                <option value="" selected disabled>Selecione um gênero</option>
+                {{#each opcoes.GENEROS}}<option value="{{this}}">{{this}}</option>{{/each}}
+            </select>
+            {{#if erro.genero_musical}}<small class="field-error">{{erro.genero_musical}}</small>{{/if}}
+        </div>
+        <div class="field">
+            <label for="status">Status *</label>
+            <select id="status" name="status" required>
+                {{#each opcoes.STATUS_ARTISTA}}
+                <option value="{{this}}" {{#eq this "Ativo"}}selected{{/eq}}>{{this}}</option>
+                {{/each}}
+            </select>
+        </div>
+    </div>
+
+    <div class="field">
+        <label for="biografia">Biografia</label>
+        <textarea id="biografia" name="biografia" rows="6" placeholder="Descreva a carreira do artista..."></textarea>
+    </div>
+
+    <div class="grid-2">
+        <div class="field">
+            <label for="website">Website</label>
+            <input type="url" id="website" name="website" placeholder="https://exemplo.com">
+            {{#if erro.website}}<small class="field-error">{{erro.website}}</small>{{/if}}
+        </div>
+        <div class="field">
+            <label for="datanas">Data de nascimento / fundação</label>
+            <input type="date" id="datanas" name="datanas">
+            {{#if erro.datanas}}<small class="field-error">{{erro.datanas}}</small>{{/if}}
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="field">
+            <label for="plataforma">Plataforma principal</label>
+            <select id="plataforma" name="plataforma">
+                <option value="">Nenhuma</option>
+                {{#each opcoes.PLATAFORMAS}}<option value="{{this}}">{{this}}</option>{{/each}}
+            </select>
+        </div>
+        <div class="field">
+            <label for="handle">Handle / usuário</label>
+            <input type="text" id="handle" name="handle" placeholder="@usuario">
+        </div>
+    </div>
+
+    <div class="field">
+        <label>Foto do artista (opcional)</label>
+        <div class="photo-row">
+            <img id="fotoPreview" class="photo-preview" src="/img/default.svg" alt="Pré-visualização">
+            <div class="photo-actions">
+                <label class="btn btn-ghost btn-sm upload-trigger">
+                    <i class="fas fa-camera"></i> Escolher foto
+                    <input type="file" name="foto" accept="image/jpeg,image/png,image/webp" data-preview="fotoPreview" hidden>
+                </label>
+                <small class="field-hint">JPG, PNG ou WEBP · até 5 MB</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <a href="/admin/artistas" class="btn btn-ghost">Cancelar</a>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-user-plus"></i> Cadastrar artista</button>
+    </div>
+</form>
+{{/if}}

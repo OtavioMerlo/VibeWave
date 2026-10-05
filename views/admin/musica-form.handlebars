@@ -1,0 +1,186 @@
+{{#if erro}}
+<div class="alert alert-danger">
+    <i class="fas fa-circle-exclamation"></i>
+    <span>Não foi possível salvar. Revise os campos destacados abaixo.</span>
+</div>
+{{/if}}
+
+<div class="page-top">
+    <div>
+        <h1><i class="fas fa-music"></i> {{#if musica}}Editar música{{else}}Nova música{{/if}}</h1>
+        <p>{{#if musica}}Atualizando <strong>{{musica.titulo}}</strong>.{{else}}Preencha os dados para adicionar uma faixa ao catálogo.{{/if}}</p>
+    </div>
+    <div class="page-top-actions">
+        <a href="/admin/musicas" class="btn btn-ghost btn-sm"><i class="fas fa-arrow-left"></i> Voltar</a>
+    </div>
+</div>
+
+{{#if musica}}{{#with musica}}
+<form method="post" action="/admin/musicas/{{id}}" enctype="multipart/form-data" class="admin-form">
+    <input type="hidden" name="_csrf" value="{{@root.csrfToken}}">
+
+    <div class="grid-2">
+        <div class="field">
+            <label for="titulo">Título *</label>
+            <input type="text" id="titulo" name="titulo" required maxlength="180" value="{{titulo}}"
+                   class="{{#if ../erro.titulo}}is-invalid{{/if}}">
+            {{#if ../erro.titulo}}<small class="field-error">{{../erro.titulo}}</small>{{/if}}
+        </div>
+        <div class="field">
+            <label for="artistId">Artista *</label>
+            <select id="artistId" name="artistId" required class="{{#if ../erro.artistId}}is-invalid{{/if}}">
+                <option value="" selected disabled>Selecione um artista</option>
+                {{#each ../artistas}}
+                <option value="{{id}}" {{#eq id ../musica.artistId}}selected{{/eq}}>{{nome}}</option>
+                {{/each}}
+            </select>
+            {{#if ../erro.artistId}}<small class="field-error">{{../erro.artistId}}</small>{{/if}}
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="field">
+            <label for="genero">Gênero *</label>
+            <select id="genero" name="genero" required class="{{#if ../erro.genero}}is-invalid{{/if}}">
+                {{#each ../opcoes.GENEROS}}
+                <option value="{{this}}" {{#eq this ../genero}}selected{{/eq}}>{{this}}</option>
+                {{/each}}
+            </select>
+            {{#if ../erro.genero}}<small class="field-error">{{../erro.genero}}</small>{{/if}}
+        </div>
+        <div class="field">
+            <label for="status">Status *</label>
+            <select id="status" name="status" required>
+                {{#each ../opcoes.STATUS_MUSICA}}
+                <option value="{{this}}" {{#eq this ../status}}selected{{/eq}}>{{this}}</option>
+                {{/each}}
+            </select>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="field">
+            <label for="lancamento">Data de lançamento</label>
+            <input type="date" id="lancamento" name="lancamento" value="{{lancamento}}">
+            {{#if ../erro.lancamento}}<small class="field-error">{{../erro.lancamento}}</small>{{/if}}
+        </div>
+        <div class="field">
+            <label for="audio">Trocar arquivo de áudio</label>
+            <label class="upload-drop upload-drop--sm" data-dropzone>
+                <i class="fas fa-file-audio"></i>
+                <span data-dropzone-label>Escolher ou arrastar</span>
+                <input type="file" id="audio" name="audio" accept="audio/*">
+            </label>
+            <small class="field-hint">MP3, M4A, AAC, WAV, OGG ou FLAC · até 50 MB</small>
+        </div>
+    </div>
+
+    <div class="field">
+        <label>Áudio atual</label>
+        <audio controls preload="none" src="/uploads/musicas/{{audio}}"></audio>
+        <small class="field-hint">Duração registrada: {{formatDuracao duracao}}</small>
+    </div>
+
+    <div class="field">
+        <label for="letra">Letra da música (opcional)</label>
+        <textarea id="letra" name="letra" rows="8" placeholder="Cole aqui a letra...">{{letra}}</textarea>
+    </div>
+
+    <div class="form-actions">
+        <a href="/admin/musicas" class="btn btn-ghost">Cancelar</a>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-floppy-disk"></i> Salvar alterações</button>
+    </div>
+</form>
+
+<div class="cover-editor">
+    <div class="cover-editor-side">
+        <h3>Capa do álbum</h3>
+        {{> capa capa=capa alt=titulo classe="capa-editor-img"}}
+    </div>
+    <form method="post" action="/admin/musicas/{{id}}/capa" enctype="multipart/form-data" class="cover-form">
+        <input type="hidden" name="_csrf" value="{{@root.csrfToken}}">
+        <label class="upload-drop">
+            <i class="fas fa-cloud-arrow-up"></i>
+            <span data-dropzone-label>Escolher ou arrastar a capa</span>
+            <img class="upload-preview" alt="Pré-visualização da capa" hidden>
+            <input type="file" name="capa" accept="image/jpeg,image/png,image/webp" required>
+        </label>
+        <small class="field-hint">JPG, PNG ou WEBP · até 5 MB · o ideal é 640×640</small>
+        <button type="submit" class="btn btn-ghost btn-sm"><i class="fas fa-image"></i> Enviar capa</button>
+    </form>
+</div>
+{{/with}}
+{{else}}
+<form method="post" action="/admin/musicas" enctype="multipart/form-data" class="admin-form">
+    <input type="hidden" name="_csrf" value="{{@root.csrfToken}}">
+
+    <div class="grid-2">
+        <div class="field">
+            <label for="titulo">Título *</label>
+            <input type="text" id="titulo" name="titulo" required maxlength="180" placeholder="Digite o título">
+            {{#if erro.titulo}}<small class="field-error">{{erro.titulo}}</small>{{/if}}
+        </div>
+        <div class="field">
+            <label for="artistId">Artista *</label>
+            <select id="artistId" name="artistId" required>
+                {{#if artistas}}
+                <option value="" selected disabled>Selecione um artista</option>
+                {{#each artistas}}
+                <option value="{{id}}">{{nome}}</option>
+                {{/each}}
+                {{else}}
+                <option value="" selected disabled>Cadastre um artista primeiro</option>
+                {{/if}}
+            </select>
+            {{#if erro.artistId}}<small class="field-error">{{erro.artistId}}</small>{{/if}}
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="field">
+            <label for="genero">Gênero *</label>
+            <select id="genero" name="genero" required>
+                <option value="" selected disabled>Selecione um gênero</option>
+                {{#each opcoes.GENEROS}}<option value="{{this}}">{{this}}</option>{{/each}}
+            </select>
+            {{#if erro.genero}}<small class="field-error">{{erro.genero}}</small>{{/if}}
+        </div>
+        <div class="field">
+            <label for="status">Status *</label>
+            <select id="status" name="status" required>
+                {{#each opcoes.STATUS_MUSICA}}
+                <option value="{{this}}" {{#eq this "Ativa"}}selected{{/eq}}>{{this}}</option>
+                {{/each}}
+            </select>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="field">
+            <label for="lancamento">Data de lançamento</label>
+            <input type="date" id="lancamento" name="lancamento">
+            {{#if erro.lancamento}}<small class="field-error">{{erro.lancamento}}</small>{{/if}}
+        </div>
+        <div class="field">
+            <label for="audio">Arquivo de áudio <span class="req">*</span></label>
+            <label class="upload-drop upload-drop--sm" data-dropzone>
+                <i class="fas fa-file-audio"></i>
+                <span data-dropzone-label>Escolher ou arrastar</span>
+                <input type="file" id="audio" name="audio" accept="audio/*" required>
+            </label>
+            {{#if erro.audio}}<small class="field-error">{{erro.audio}}</small>{{/if}}
+            <small class="field-hint">MP3, M4A, AAC, WAV, OGG ou FLAC · até 50 MB</small>
+        </div>
+    </div>
+
+    <div class="field">
+        <label for="letra">Letra da música (opcional)</label>
+        <textarea id="letra" name="letra" rows="8" placeholder="Cole aqui a letra..."></textarea>
+    </div>
+
+    <div class="form-actions">
+        <a href="/admin/musicas" class="btn btn-ghost">Cancelar</a>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Cadastrar música</button>
+    </div>
+</form>
+{{/if}}

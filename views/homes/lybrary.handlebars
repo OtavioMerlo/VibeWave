@@ -9,36 +9,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/vibewave.css">
-    <style>
-        .library-actions { display: flex; align-items: center; gap: 14px; }
-        .artists-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 20px;
-        }
-        .artist-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 18px;
-            text-align: center;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-        .artist-card:hover { transform: translateY(-6px); box-shadow: var(--shadow); border-color: var(--primary); }
-        .artist-avatar {
-            width: 110px;
-            height: 110px;
-            margin: 0 auto 14px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 3px solid var(--primary);
-            background: var(--surface-3);
-        }
-        .artist-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .artist-card h3 { font-size: 0.98rem; }
-        .artist-card p { color: var(--text-muted); font-size: 0.82rem; }
-    </style>
 </head>
 <body>
     <div class="app-container">
@@ -79,22 +49,11 @@
 
             <section class="library-content">
                 <div class="tab-content active" id="musicas">
-                    <div class="playlist-grid">
+                    <div class="playlist-grid" data-fila>
                         {{#each musicas}}
-                        <a href="/player/{{this.id}}" class="playlist-card">
-                            <div class="playlist-cover">
-                                {{#if this.capa}}
-                                    <img src="/uploads/capamusica/{{this.capa}}" alt="{{this.titulo}}">
-                                {{else}}
-                                    <div class="cover-placeholder"><i class="fas fa-music"></i></div>
-                                {{/if}}
-                                <div class="play-button"><i class="fas fa-play"></i></div>
-                            </div>
-                            <h3>{{this.titulo}}</h3>
-                            <p>{{this.artista.nome}}</p>
-                        </a>
+                        {{> track-card this}}
                         {{else}}
-                        <p style="color: var(--text-muted);">Nenhuma música na sua biblioteca ainda.</p>
+                        <p class="empty-state">Nenhuma música na sua biblioteca ainda.</p>
                         {{/each}}
                     </div>
                 </div>
@@ -105,7 +64,7 @@
                         <div class="artist-card">
                             <div class="artist-avatar">
                                 {{#if this.foto}}
-                                    <img src="/uploads/artistas/{{this.foto}}" alt="{{this.nome}}">
+                                    <img src="{{#if this.foto}}/uploads/artistas/{{this.foto}}{{else}}/img/default.svg{{/if}}" alt="{{this.nome}}">
                                 {{else}}
                                     <div class="cover-placeholder"><i class="fas fa-user"></i></div>
                                 {{/if}}
@@ -124,6 +83,7 @@
         {{> player-footer}}
     </div>
 
+    <script src="/js/player-core.js"></script>
     <script src="/js/vibewave.js"></script>
 </body>
 </html>

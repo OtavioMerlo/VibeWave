@@ -1,8 +1,12 @@
 module.exports = {
-    eLogado: function(req, res, next) {
-        if(req.user) {
+    eLogado: function (req, res, next) {
+        if (typeof req.isAuthenticated === 'function' && req.isAuthenticated()) {
             return next();
         }
-        return res.redirect('usuario/login');
+
+        const destino = req.originalUrl && req.originalUrl !== '/' ? req.originalUrl : '';
+        const query = destino ? `?redirect=${encodeURIComponent(destino)}` : '';
+
+        return res.redirect(`/usuario/login${query}`);
     }
 };

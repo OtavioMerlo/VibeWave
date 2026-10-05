@@ -1,0 +1,20 @@
+<a href="/admin" class="admin-logo">
+    <i class="fas fa-wave-square"></i>
+    Vibewave <span class="badge-admin">ADMIN</span>
+</a>
+
+<nav class="admin-menu">
+    <a href="/admin" class="{{#eq active 'dashboard'}}active{{/eq}}"><i class="fas fa-gauge-high"></i> Dashboard</a>
+    <a href="/admin/musicas" class="{{#eq active 'musicas'}}active{{/eq}}"><i class="fas fa-music"></i> Músicas</a>
+    <a href="/admin/artistas" class="{{#eq active 'artistas'}}active{{/eq}}"><i class="fas fa-user"></i> Artistas</a>
+    <a href="/admin/usuarios" class="{{#eq active 'usuarios'}}active{{/eq}}"><i class="fas fa-users"></i> Usuários</a>
+    <a href="/admin/perfil" class="{{#eq active 'perfil'}}active{{/eq}}"><i class="fas fa-user-shield"></i> Meu acesso</a>
+</nav>
+
+<a href="/home" class="admin-logout admin-logout--app">
+    <i class="fas fa-headphones"></i> Ir para o app
+</a>
+
+<a href="/usuario/logout" class="admin-logout">
+    <i class="fas fa-right-from-bracket"></i> Sair
+</a>

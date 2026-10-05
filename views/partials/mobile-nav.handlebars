@@ -5,7 +5,8 @@
     <a class="mobile-logo" href="/home"><i class="fas fa-wave-square"></i> Vibewave</a>
     <div class="mobile-actions">
         {{#if user}}
-        <a href="/perfil" class="mobile-avatar"><img src="/uploads/FotoUser/{{user.foto}}" alt="{{user.name}}"></a>
+        <a href="/perfil" class="mobile-avatar"><img src="{{#if user.foto}}/uploads/FotoUser/{{user.foto}}{{else}}/img/default.svg{{/if}}" alt="{{user.name}}" loading="lazy"
+                 onerror="this.onerror=null;this.src='/img/default.svg'"></a>
         {{else}}
         <a href="/usuario/login" class="mobile-avatar"><i class="fas fa-user"></i></a>
         {{/if}}

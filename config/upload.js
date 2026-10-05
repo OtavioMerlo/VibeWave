@@ -2,47 +2,53 @@ const multer = require('multer');
 const path = require('path');
 const sharp = require('sharp');
 
-// Configuração do armazenamento
-const storage = multer.memoryStorage();
+const LIMITE_BYTES = 5 * 1024 * 1024;
 
-// Filtro para aceitar apenas imagens
 const fileFilter = (req, file, cb) => {
-  const filetypes = /jpeg|jpg|png|gif/;
-  const mimetype = filetypes.test(file.mimetype);
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  
-  if (mimetype && extname) {
-    return cb(null, true);
-  }
-  cb(new Error('Apenas imagens são permitidas!'));
+    const extensoesOk = ['.jpg', '.jpeg', '.png', '.webp'];
+    const mimesOk = ['image/jpeg', 'image/png', 'image/webp'];
+
+    const ext = path.extname(file.originalname || '').toLowerCase();
+    const mime = String(file.mimetype).toLowerCase();
+
+    if (extensoesOk.includes(ext) && mimesOk.includes(mime)) {
+        return cb(null, true);
+    }
+
+    cb(new Error('Formato de imagem não permitido. Use JPG, PNG ou WEBP.'));
 };
 
-// Configuração do upload
 const upload = multer({
-  storage: storage,
-  fileFilter: fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB
+    storage: multer.memoryStorage(),
+    fileFilter,
+    limits: { fileSize: LIMITE_BYTES, files: 1 }
 });
 
-// Middleware para processar a imagem
-const processImage = async (req, res, next) => {
-  if (!req.file) return next();
-  
-  try {
-    const filename = `artist-${Date.now()}.jpeg`;
-    const imagePath = path.join(__dirname, '../public/uploads/artists', filename);
-    
-    await sharp(req.file.buffer)
-      .resize(800, 800)
-      .toFormat('jpeg')
-      .jpeg({ quality: 90 })
-      .toFile(imagePath);
-    
-    req.body.photoUrl = `/uploads/artists/${filename}`;
-    next();
-  } catch (err) {
-    next(err);
-  }
-};
+/* Recorta para no máximo 640x640 e converte para webp. */
+async function processImage(req, res, next) {
+    if (!req.file) return next();
 
-module.exports = { upload, processImage };
+    try {
+        const arquivo = path.extname(req.file.originalname || '').toLowerCase();
+        const destino = path.join(__dirname, '..', 'public', 'uploads', 'artistas');
+        const nomeFinal = arquivo === '.webp' ? 'webp' : 'jpeg';
+
+        const filename = `artista-${Date.now()}.${nomeFinal}`;
+
+        let pipeline = sharp(req.file.buffer).rotate();
+
+        pipeline =
+            nomeFinal === 'webp'
+                ? pipeline.resize(640, 640, { fit: 'cover', position: 'attention' }).webp({ quality: 82 })
+                : pipeline.resize(640, 640, { fit: 'cover', position: 'attention' }).jpeg({ quality: 82, mozjpeg: true });
+
+        await pipeline.toFile(path.join(destino, filename));
+
+        req.body.foto = filename;
+        next();
+    } catch (err) {
+        next(err);
+    }
+}
+
+module.exports = { upload, processImage, LIMITE_BYTES };
