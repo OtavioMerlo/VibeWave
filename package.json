@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "test": "node tests/render.test.js && node tests/player.test.js"
+    "test": "node tests/render.test.js && node tests/player.test.js && node tests/spa.test.js",
+    "admin": "node scripts/criar-admin.js"
   },
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
