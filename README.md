@@ -40,7 +40,7 @@ O projeto tem como alvo ser uma plataforma onde usuários cadastram-se, navegam 
 - **Player de música** (`/player/:id`) — página dedicada de reprodução com barra de progresso, tempo e seek.
 - **Playlists** — Favoritas, Recentes e Workouts Mix (`/playlist`, `/recentemente`, `/treino`) reutilizando a view de lista.
 - **Perfil** (`/perfil`) — dados do usuário logado.
-- **Player persistente entre páginas** — a reprodução **não para** ao trocar de página, recarregar com F5 ou usar voltar/avançar: o estado (faixa, posição, volume, fila, shuffle/repeat) fica em `localStorage` e é restaurado na navegação seguinte.
+- **Player persistente entre páginas** — a reprodução **não para** ao navegar dentro do app (Início → Buscar → Biblioteca, voltar/avançar): a navegação troca só o conteúdo, sem recarregar a página, e o `<audio>` continua vivo. Se der F5 ou abrir a URL direto, o estado (faixa, posição, volume, fila, shuffle/repeat) é restaurado do `localStorage` e a faixa retoma de onde parou.
 - **Player global (rodapé fixo)** — via partial `player-footer`, controlado por `player-core.js`; a página `/player/:id` controla o mesmo elemento de áudio.
 - **Media Session** — título, artista e capa são expostos para os controles do sistema operacional.
 - **Tema claro/escuro** com persistência em `localStorage`.
@@ -142,13 +142,25 @@ As tabelas são criadas automaticamente por `sequelize.sync()` na inicializaçã
 
 **4. Torne um usuário administrador**
 
-Como o registro público sempre cria contas comuns, promova a conta no banco:
+Como o registro público sempre cria contas comuns, existe um comando para
+promover uma conta sem precisar mexer no MySQL na mão:
 
-```sql
-UPDATE users SET isAdmin = 1 WHERE email = 'seu@email.com';
+```bash
+# promove uma conta que já existe
+npm run admin -- seu@email.com
+
+# cria a conta já como administradora (pergunta a senha)
+npm run admin -- novo@email.com
+
+# rebaixa (perde o acesso ao painel)
+npm run admin -- seu@email.com --rebaixar
 ```
 
-Sem `isAdmin = 1`, o acesso a `/admin` responde **403** mesmo com o login feito.
+Depois de promover, é preciso **sair e entrar de novo** (ou reiniciar o servidor,
+porque a sessão guarda o usuário) para o acesso passar.
+
+Sem permissão, `/admin` responde **403**. A própria tela de acesso negado mostra
+o comando com o seu e-mail, para não ter que adivinhar.
 
 ---
 
@@ -225,10 +237,11 @@ VibeWave/
 │   └── sucess/sucess.handlebars
 ├── public/
 │   ├── css/                   # vibewave.css, admin.css
-│   ├── js/                    # vibewave.js, player-core.js, admin.js
+│   ├── js/                    # vibewave.js, player-core.js, spa.js, admin.js
 │   ├── img/                   # imagens estáticas (default.svg)
 │   └── uploads/               # Sending: musicas/, artistas/, capamusica/, FotoUser/
-├── tests/                     # render.test.js (views) e player.test.js (persistência)
+├── scripts/                   # criar-admin.js (npm run admin)
+├── tests/                     # render, player e spa
 └── .gitignore
 ```
 
@@ -433,8 +446,12 @@ título, controles, barra). O `public/js/player-core.js` cria **um único elemen
 sincronia com a página atual — inclusive com a página `/player/:id`, que
 manipula o mesmo áudio.
 
-Ao navegar, o estado é gravado em `localStorage` e lido na inicialização da
-próxima página:
+Dentro do app a navegação é feita por JavaScript (`public/js/spa.js`), então o
+documento **não é recarregado** e o `<audio>` — que é criado por `new Audio()`,
+fora da árvore do DOM — permanece o mesmo. Isso é o que faz a música não parar.
+
+Quando há recarregamento de verdade (F5, URL digitada, aba nova), o estado é
+lido do `localStorage` e a faixa volta na posição salva:
 
 | Chave       | Conteúdo                                                        |
 | ----------- | --------------------------------------------------------------- |
@@ -473,12 +490,35 @@ VW.clear()              // limpa fila e estado (não apaga o volume)
 - **Media Session** — título, artista e capa alimentam os controles do sistema
   operacional (teclado, Bluetooth, notificação).
 
+### Navegação sem recarga
+
+`public/js/spa.js` intercepta links internos e o formulário de busca, busca a
+página com `fetch`, extrai o `main.main-content` com `DOMParser` e troca apenas
+esse trecho. Detalhes que importam:
+
+- **Progressivo.** Os links continuam sendo `<a href>` de verdade. Sem
+  JavaScript, com a sessão expirada ou em qualquer erro de rede, a navegação
+  normal acontece.
+- **Fora da área trocada.** `sidebar`, `mobile-nav` e `player-footer` são
+  irmãos de `<main>`, então nunca são recriados — é isso que mantém o áudio
+  vivo.
+- **Admin e login ficam de fora.** `/admin*`, `/usuario*` e `/logout` sempre
+  recarregam, porque têm layout e scripts próprios e alteram a sessão.
+- **Falha cosmética não recarrega.** Ajustes de menu, foco e religamento dos
+  controles rodam num `try/catch` próprio: se um deles falhar, a página **não**
+  recarrega, para não destruir a reprodução.
+- **Ordem de registro importa.** O `player-core` registra o listener de clique
+  no `DOMContentLoaded`; o `spa.js` faz o mesmo, para ficar **depois** dele.
+  Registrando no parse, ele ganharia a disputa do `preventDefault()` e o clique
+  em "tocar" passaria a só navegar.
+
 ### Limite conhecido
 
-Quando a página é restaurada, o navegador pode **bloquear o autoplay** se o
-usuário ainda não interagiu com a página. Nesse caso a faixa fica carregada e
-posicionada no tempo salvo, mas **pausada** — basta apertar play. Isso é
-aplicado por todos os navegadores e não pode ser contornado por JavaScript.
+Em um **recarregamento real** (F5, URL digitada, aba nova), o navegador pode
+bloquear o autoplay, porque o documento novo ainda não teve interação do
+usuário. Aí a faixa fica carregada e posicionada no tempo salvo, mas **pausada**
+— basta apertar play. Isso vale para todos os navegadores e não pode ser
+contornado por JavaScript.
 
 ### Referência de dados
 
@@ -557,7 +597,8 @@ atributos não são escritos à mão nos templates.
 - URLs antigas foram preservadas por redirects.
 
 **Player persistente**
-- Novo `public/js/player-core.js`: um único elemento `<audio>` por página, com estado salvo em `localStorage` (`vw-player`) — **a música continua tocando ao trocar de página, recarregar ou usar voltar/avançar**.
+- Novo `public/js/player-core.js`: um único elemento `<audio>` (criado por `new Audio()`, fora da árvore do DOM), com estado salvo em `localStorage` (`vw-player`).
+- Novo `public/js/spa.js`: navegação **sem recarga** dentro de `/home`, `/search`, `/lybrary`, `/playlist`, `/recentemente`, `/treino` e `/perfil`. Só o conteúdo de `<main class="main-content">` é trocado, então o documento nunca descarrega e **a música continua tocando ao navegar, inclusive no voltar/avançar**.
 - `player-footer.handlebars` foi reescrito para ser populado por JS, com barra de progresso clicável, volume, fila e controles de shuffle/repeat.
 - Partial `dataTrack` gera os atributos `data-track-*`; as listas viram filas reais. A página `/player/:id` controla o mesmo áudio do rodapé.
 - API pública `window.VW` (`play`, `pause`, `toggle`, `next`, `previous`, `seek`, `volume`, `state`, `clear`) e integração com a **Media Session** do sistema operacional.
@@ -585,7 +626,7 @@ atributos não são escritos à mão nos templates.
 - Formulários de login/cadastro estavam sem `_csrf` e sem `redirect`, o que os teria quebrado com o novo middleware.
 
 **Testes**
-- `npm test` passa a existir, com `tests/render.test.js` (renderiza todas as views com os helpers reais e falha em token CSRF vazio) e `tests/player.test.js` (persistência do player com DOM simulado).
+- `npm test` passa a existir, com `tests/render.test.js` (renderiza todas as views com os helpers reais e falha em token CSRF vazio), `tests/player.test.js` (persistência do player com DOM simulado) e `tests/spa.test.js` (decisão de navegação da área de conteúdo).
 - `app.js` passou a exportar o app e só abre a porta quando executado diretamente, permitindo `require('./app')` em testes.
 
 ### v1.5 — Migração para Sequelize/MySQL e redesenho da interface
@@ -641,7 +682,7 @@ Antes de colocar o projeto em produção, considere:
 - **Recursos ainda estáticos** — favoritos, histórico real e criação de playlists não são persistidos; as páginas `/playlist`, `/recentemente` e `/treino` exibem o catálogo completo como placeholders.
 - **Imagem padrão legada** — `public/uploads/FotoUser/default.png` (1,2 MB) continua no repositório por compatibilidade com registros antigos. Novos registros gravam `NULL` e as views caem em `/img/default.svg`; vale remover o arquivo após migrar os registros antigos.
 - **Sem migrations** — o schema é criado por `sequelize.sync()` na inicialização. Alterações em models não viram migrations versionadas.
-- **Testes** — `npm test` cobre a renderização das views e a persistência do player, mas não há testes de integração com o banco nem cobertura de rotas.
+- **Testes** — `npm test` cobre renderização das views, persistência do player e a decisão de navegação do `spa.js`, mas não há testes de integração com o banco nem cobertura de rotas. A área de conteúdo navegada por JavaScript **ainda não foi verificada em um navegador real** (o ambiente de teste não tem browser automatizável): vale navegar Início → Buscar → Biblioteca e usar o voltar/avançar depois de instalar o app.
 
 ---
 
@@ -652,7 +693,8 @@ npm test
 ```
 
 - `tests/render.test.js` — carrega os **helpers reais de `app.js`**, renderiza todas as views com dados de exemplo e falha se sobrar Handlebars não processado, `undefined`, `[object Object]` ou **token CSRF vazio** (a causa clássica de formulários que enviam `_csrf=""`).
-- `tests/player.test.js` — simula `document`, `localStorage` e `Audio` para validar o ciclo de persistência do `player-core.js`: tocar, salvar, **restaurar em outra navegação**, pausar, mudar volume, buscar posição e limpar o estado.
+- `tests/player.test.js` — simula `document`, `localStorage` e `Audio` para validar o ciclo de persistência do `player-core.js`: tocar, salvar, **restaurar em outra navegação**, pausar, mudar volume, mudo, buscar posição e limpar o estado.
+- `tests/spa.test.js` — simula o DOM e o `fetch` para validar a decisão de navegação do `spa.js`: o que é interceptado e o que não é, a troca de conteúdo, título, `pushState`, o fallback para `location.assign` e a garantia de que **uma falha cosmética nunca recarrega a página**.
 
 ---
 
