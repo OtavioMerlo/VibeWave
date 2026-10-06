@@ -582,6 +582,7 @@ atributos não são escritos à mão nos templates.
 ### v1.6 — Painel administrativo, player persistente e neon
 
 **Formulários com upload**
+- **Corrigido**: enviar uma capa (ou foto) num formato/tamanho recusado respondia **500 com a página de "Não encontrado"** e nada acontecia — o aviso bom nunca era exibido porque o erro nascia no middleware do multer, fora do `try/catch` da rota. Agora o erro éinterceptado no fim do router do admin e volta ao formulário com o formato aceito e o limite.
 - **Corrigido**: os cinco formulários `multipart/form-data` (criar/editar artista, criar/editar música e enviar capa) respondiam **403 "Token de segurança inválido"** em toda tentativa de envio. `csrfVerify` é um `router.use` e roda antes do `multer` da rota, então `req.body` ainda estava vazio e o campo `_csrf` não existia. Nenhuma rota de escrita precisou mudar: a conferência do token foi adiada para `verificarCsrfAposUpload`, aplicado logo após o `multer`.
 - O upload rejeitado agora é **apagado do disco**, para não deixar arquivo órfão de uma requisição não autorizada.
 - A checagem de `Origin`/`Referer` continua antes de qualquer gravação: um POST vindo de outro site não chega a escrever arquivo.
@@ -596,6 +597,8 @@ atributos não são escritos à mão nos templates.
 
 **Uploads**
 - `config/multerconfig.js` reescrito com allowlist de extensão **e** MIME, limite de 50 MB para áudio e 5 MB para imagem, e nomes gerados com `crypto.randomUUID()`.
+- **Erro de upload volta ao formulário**: o `fileFilter` recusa o arquivo **antes** do handler da rota rodar, então um `catch` dentro do handler nunca era alcançado — a mensagem amigável era código morto e o usuário recebia um **500 com a página de "Não encontrado"**, sem explicação. Agora um tratador de erro no fim do router do admin transforma a falha em aviso no formulário certo (`mensagemDeErroMulter` + `paginaDeErroDeUpload`), dizendo o que enviar: `Formato não aceito. Envie jpg, jpeg, png, webp com até 5 MB.`
+- `tests/upload.test.js` cobre a mensagem, o destino do redirect e a normalização de extensão (`CAPA.JPG` → `.jpg`).
 - Exclusão de registros agora apaga os arquivosassociated do disco e ignora nomes padrão.
 
 **Painel administrativo**
@@ -703,6 +706,7 @@ npm test
 - `tests/player.test.js` — simula `document`, `localStorage` e `Audio` para validar o ciclo de persistência do `player-core.js`: tocar, salvar, **restaurar em outra navegação**, pausar, mudar volume, mudo, buscar posição e limpar o estado.
 - `tests/spa.test.js` — simula o DOM e o `fetch` para validar a decisão de navegação do `spa.js`: o que é interceptado e o que não é, a troca de conteúdo, título, `pushState`, o fallback para `location.assign` e a garantia de que **uma falha cosmética nunca recarrega a página**.
 - `tests/csrf.test.js` — exercita `helpers/csrf.js` sem subir o Express: métodos seguros, `urlencoded` válido e inválido, o **adiamento em `multipart`**, o bloqueio de origem externa *antes* do upload, e a limpeza do arquivo no disco quando o token é recusado depois do `multer`.
+- `tests/upload.test.js` — trava o tratamento de erro do upload: mensagem por tipo de `MulterError`, o destino do redirect para cada formulário e a normalização de extensão.
 
 ---
 

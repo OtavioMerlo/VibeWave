@@ -32,7 +32,13 @@ function criarFiltro(categoria) {
             return cb(null, true);
         }
 
-        cb(new multer.MulterError('LIMIT_UNEXPECTED_FILE', file.fieldname));
+        /* O MulterError "genérico" não diz ao usuário o que ele fez de errado.
+           Guardamos o que era aceito para a rota mostrar uma mensagem útil em
+           vez de um erro 500 genérico. */
+        const erro = new multer.MulterError('LIMIT_UNEXPECTED_FILE', file.fieldname);
+        erro.categoria = categoria;
+        erro.extensoesAceitas = ext;
+        cb(erro);
     };
 }
 

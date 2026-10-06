@@ -62,6 +62,13 @@ function mensagemDeErroMulter(err) {
         return 'Arquivo muito grande. Verifique o tamanho máximo permitido.';
     }
 
+    if (err.extensoesAceitas) {
+        const lista = err.extensoesAceitas.map((e) => e.replace('.', '')).join(', ');
+        const limite = err.categoria === 'imagem' ? '5 MB' : '50 MB';
+
+        return `Formato não aceito. Envie ${lista} com até ${limite}.`;
+    }
+
     if (err.code === 'LIMIT_UNEXPECTED_FILE' || err.code === 'LIMIT_FILE_COUNT') {
         return 'Arquivo não permitido ou em quantidade inesperada.';
     }
@@ -858,4 +865,46 @@ router.post('/musica/edit/:id', validarId, (req, res) => res.redirect(`/admin/mu
 router.post('/musicas/nova', (req, res) => res.redirect('/admin/musicas'));
 router.post('/musica/delete/:id', validarId, (req, res) => res.redirect(`/admin/musicas/${req.params.id}/excluir`));
 
+/* Erro do multer (tipo não liberado, arquivo grande demais) é levantado pelo
+ * `upload.single()` — um middleware que roda ANTES do handler da rota. Por isso
+ * o `catch` de dentro do handler nunca era alcançado e a mensagem amigável de
+ * `mensagemDeErroMulter` era código morto: o erro subia para o tratador global
+ * de app.js e o usuário recebia um 500 com a página de "Não encontrado",
+ * sem explicação nenhuma.
+ *
+ * Aqui a falha volta para o formulário com um aviso claro. O multer não
+ * gravou arquivo nesse caminho (o fileFilter barra antes de criar o stream),
+ * então não há o que apagar. */
+const VOLTAR_AO_FORMULARIO = [
+    [/^\/admin\/musicas\/(\d+)\/capa$/, (m) => `/admin/musicas/${m[1]}/editar`],
+    [/^\/admin\/musicas\/(\d+)$/, (m) => `/admin/musicas/${m[1]}/editar`],
+    [/^\/admin\/musicas$/, () => '/admin/musicas/nova'],
+    [/^\/admin\/artistas\/(\d+)$/, (m) => `/admin/artistas/${m[1]}/editar`],
+    [/^\/admin\/artistas$/, () => '/admin/artistas/nova']
+];
+
+function paginaDeErroDeUpload(url) {
+    /* Tira a query e o barra final para o casamento do padrão não depender
+       de o chamador ter limpado a url antes. */
+    const caminho = String(url).split('?')[0].replace(/\/+$/, '');
+
+    for (const [padrao, destino] of VOLTAR_AO_FORMULARIO) {
+        const achado = padrao.exec(caminho);
+        if (achado) return destino(achado);
+    }
+
+    return '/admin';
+}
+
+router.use((err, req, res, next) => {
+    if (!err || err.name !== 'MulterError') return next(err);
+
+    req.flash('error_msg', mensagemDeErroMulter(err) || 'Não foi possível enviar o arquivo.');
+    return res.redirect(paginaDeErroDeUpload(req.originalUrl));
+});
+
 module.exports = router;
+
+/* Exportados para os testes cobrirem o destino do redirect e a mensagem. */
+module.exports.mensagemDeErroMulter = mensagemDeErroMulter;
+module.exports.paginaDeErroDeUpload = paginaDeErroDeUpload;
