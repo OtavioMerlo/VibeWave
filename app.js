@@ -62,6 +62,30 @@ app.use((req, res, next) => {
 // Token CSRF disponivel para todos os templates
 app.use(csrfToken);
 
+// TEMPORARIO (diagnostico): registra o que o browser envia para /admin
+const fsLog = require('fs');
+app.use((req, res, next) => {
+    if (req.method !== 'POST' && !req.originalUrl.includes('/admin')) return next();
+
+    const linha = [
+        new Date().toISOString(),
+        req.method,
+        req.originalUrl,
+        'ct=' + (req.get('content-type') || '').slice(0, 60),
+        'cookie=' + (req.get('cookie') ? 'sim' : 'nao'),
+        'ref=' + (req.get('referer') || 'nenhum'),
+        'orig=' + (req.get('origin') || 'nenhum')
+    ].join(' | ');
+
+    try { fsLog.appendFileSync('/tmp/opencode/req.log', linha + '\n'); } catch (e) {}
+
+    res.on('finish', () => {
+        try { fsLog.appendFileSync('/tmp/opencode/req.log', '    -> status=' + res.statusCode + ' loc=' + (res.get('Location') || '-') + '\n'); } catch (e) {}
+    });
+
+    next();
+});
+
 // body-parser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
